@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts of LAB Consulting</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="flexbox, styles, BEM">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- Fonts -->
+    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="libs/bootstrap-reboot.css">
+    <link rel="stylesheet" href="libs/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header class="header" id="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-6 col-sm-5 col-md-4 col-xl-4 col-lg-3">
+                    <a href="index.html"><img src="img/main/logo.png" alt="Logo" class="logo"></a>
+                </div>
+                <div class="d-none d-lg-block col-lg-7 col-xl-6 justify-content-between">
+                    <ul class="menu d-flex">
+                        <li class="menu__item">
+                            <a href="about.html">
+                                О компании
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="#">
+                                Пресс-центр
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="services.html">
+                                Услуги
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="#">
+                                Отрасли
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="contacts.html">
+                                Контакты
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2 ml-auto">
+                    <a href="#" class="button button_green header__button ml-auto">
+                        <i class="fas fa-phone"></i>
+                        Заказать звонок
+                    </a>
+                </div>
+                <!-- <div class="col-1 d-block d-xl-none ">
+					<div class="burger">
+						<span></span>
+					</div>
+				</div> -->
+            </div>
+        </div>
+    </header>
+
+    <section class="contacts" id="contacts">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-xl-3">
+                    <h1 class="main-title">
+                        Контакты
+                    </h1>
+                    <nav class="breadcrumb" aria-label="Breadcrumb">
+                        <ul class="breadcrumb__list">
+                            <li class="breadcrumb__item breadcrumb__item_first"><a class="breadcrumb__link"
+                                    href="index.html">Главная</a>
+                            </li>
+                            <li class="breadcrumb__item breadcrumb__item_last"><a class="breadcrumb__link"
+                                    href="#">Контактная
+                                    Информация</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-8 col-xl-9">
+                    <ul class="main-links d-flex ml-lg-auto">
+                        <li>
+                            <a class="main-links__link main-links__link_active" href="#">Офис в Одессе</a>
+                        </li>
+                        <li>
+                            <a class="main-links__link" href="#">Офис в Киеве</a>
+                        </li>
+                        <li>
+                            <a class="main-links__link" href="#">Офис в Харькове</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="map" id="map">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1593.2173552861582!2d35.18793931795074!3d47.811273076398855!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40dc5e73db2fc395%3A0xff5d33261029a62b!2z0LLRg9C70LjRhtGPINCR0LDQt9Cw0YDQvdCwLCAzNiwg0JfQsNC_0L7RgNGW0LbQttGPLCDQl9Cw0L_QvtGA0ZbQt9GM0LrQsCDQvtCx0LvQsNGB0YLRjCwgNjkwNjE!5e0!3m2!1suk!2sua!4v1590597854216!5m2!1suk!2sua"
+                        width="100%" height="445" frameborder="0" style="border:0;" allowfullscreen=""
+                        aria-hidden="false" tabindex="0"></iframe>
+                </div>
+                <div class="map__label">
+                    <div class="map__topline d-flex">
+                        <h3 class="map__title">
+                            LAB Consulting
+                        </h3>
+                        <div class="links d-flex align-items-center">
+                            <a href="https://fb.com" class="links__item links__item_fb" target="_blank">
+                                <i class="fab fa-facebook-square"></i>
+                            </a>
+                            <a href="https://twitter.com" class="links__item links__item_tw" target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://t.me" class="links__item links__item_tg" target="_blank">
+                                <i class="fab fa-telegram-plane"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="map__label-body d-flex">
+                        <div class="map__column">
+                            <div class="d-flex">
+                                <i class="fas fa-phone"></i>
+                                <a href="tel:+380487562354">
+                                    +38 (048) 756-23-54
+                                </a>
+                            </div>
+                            <div class="d-flex">
+                                <i class="fas fa-phone"></i>
+                                <a href="tel:+380487562354" class="map__tel">
+                                    +38 (048) 756-23-54
+                                </a>
+                            </div>
+                            <div class="d-flex">
+                                <i class="fas fa-location-arrow"></i>
+                                <a href="#" class="map__adress">
+                                    65000, <br> Украина, г. Одесса <br> Ул Базарная, 36
+                                </a>
+                            </div>
+                            <div class="d-flex">
+                                <i class="fas fa-envelope"></i>
+                                <a href="mailto:info@lab-consult.com" class="map__mail">
+                                    info@lab-consult.com
+                                </a>
+                            </div>
+                        </div>
+                        <div class="map__column">
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua.
+                            </p>
+                            <p>
+                                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                aliquip ex ea commodo consequat.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <section class="about" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            О компании
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Видение, миссия и ценности</a>
+                            <a href="#">Преимущества</a>
+                            <a href="#">Клиенты</a>
+                            <a href="#">Партнеры</a>
+                            <a href="#">Контакты</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Пресс – центр
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Новости</a>
+                            <a href="#">Публикации</a>
+                            <a href="#">Мероприятия</a>
+                            <a href="#">Консультация эксперта</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Услуги
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Legal (Юридическое сопровождение)</a>
+                            <a href="#">Accounting ( Финансовый аутсорсинг)</a>
+                            <a href="#">Business Consulting (Бизнес консалтинг)</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Отрасли
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Аграрный сектор</a>
+                            <a href="#">Внешнеэкономическая деятельность</a>
+                            <a href="#">ИT – бизнес</a>
+                            <a href="#">Оптовая и розничная торговля</a>
+                            <a href="#">Сфера услуг</a>
+                            <a href="#">Транспорт и Логистика</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Образовательный центр
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Про Образовательный Центр</a>
+                            <a href="#">Бизнес-тренинги, семинары, круглые столы</a>
+                            <a href="#">Преимущества</a>
+                            <a href="#">Alumni</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Соц. предпринимательство
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Социальная миссия</a>
+                            <a href="#">Проекты </a>
+                            <a href="#">Партнеры</a>
+                            <a href="#">Консультация эксперта</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="#"><img src="img/footer/logo__footer.png" alt="Logo" class="footer__logo logo"></a>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <div class="footer__info">
+                        <p>
+                            Вы хотите сотрудничать с нами? У Вас есть идеи или предложения? Свяжитесь с нами прямо
+                            сейчас!
+                        </p>
+                        <p>
+                            65000, <br> Украина, г. Одесса <br> Ул Базарная, 36
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-2">
+                    <div class="footer__credits">
+                        <div class="footer__author d-flex">
+                            <span class="letter">W</span>
+                            <p>
+                                Дизайн и разработка <a href="https://github.com/peterkarnaukhsite/peterkarnaukhsite"
+                                    target="_blank" class="ttu">Peter Key</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="footer__policy">
+                        © Все права защищены <strong>LAB Consulting</strong><br>
+                        <a href="#">lab-consult.com</a>
+                    </div>
+                </div>
+                <div class="col-5 col-md-3 col-lg-2 ml-auto">
+                    <a href="#" class="button button_green">
+                        <i class="fas fa-phone"></i>
+                        Заказать звонок
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>

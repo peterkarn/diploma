@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB Consulting Services</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="flexbox, styles, BEM">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- Fonts -->
+    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="libs/bootstrap-reboot.css">
+    <link rel="stylesheet" href="libs/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header class="header" id="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-6 col-sm-5 col-md-4 col-xl-4 col-lg-3">
+                    <a href="index.html"><img src="img/main/logo.png" alt="Logo" class="logo"></a>
+                </div>
+                <div class="d-none d-lg-block col-lg-7 col-xl-6 justify-content-between">
+                    <ul class="menu d-flex">
+                        <li class="menu__item">
+                            <a href="about.html">
+                                О компании
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="#">
+                                Пресс-центр
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="services.html">
+                                Услуги
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="#">
+                                Отрасли
+                            </a>
+                        </li>
+                        <li class="menu__item">
+                            <a href="contacts.html">
+                                Контакты
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2 ml-auto">
+                    <a href="#" class="button button_green header__button ml-auto">
+                        <i class="fas fa-phone"></i>
+                        Заказать звонок
+                    </a>
+                </div>
+                <!-- <div class="col-1 d-block d-xl-none ">
+                    <div class="burger">
+                        <span></span>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </header>
+    <section class="attendance" id="attendance">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3">
+                    <h1 class="main-title">
+                        Услуги
+                    </h1>
+                    <nav class="breadcrumb" aria-label="Breadcrumb">
+                        <ul class="breadcrumb__list">
+                            <li class="breadcrumb__item breadcrumb__item_first"><a class="breadcrumb__link"
+                                    href="index.html">Главная</a>
+                            </li>
+                            <li class="breadcrumb__item breadcrumb__item_last"><a class="breadcrumb__link"
+                                    href="#">Услуги</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-9">
+                    <ul class="main-links d-flex ml-lg-auto">
+                        <li>
+                            <a class="main-links__link main-links__link_active" href="#">Legal <br> <span>Юридическое
+                                    сопровождение</span></a>
+                        </li>
+                        <li>
+                            <a class="main-links__link" href="#">Accounting <br> <span>Финансовый аутсорсинг</span></a>
+                        </li>
+                        <li>
+                            <a class="main-links__link" href="#"> Business Consulting <br> <span>Бизнес
+                                    консалтинг</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="lawyers" id="lawyers">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-lg-3 text-center">
+                    <img src="img/services/circle.png" class="lawyers__img" alt="сервисы">
+                </div>
+                <div class="col-lg-4 col-sm-8">
+                    <div class="lawyers__descr">
+                        <h3 class="lawyers__title">
+                            Юридическое сопровождение
+                        </h3>
+                        <p class="lawyers__text">
+                            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                            architecto beatae vitae dicta sunt explicabo.
+                        </p>
+                    </div>
+                </div>
+                <div class="d-none d-lg-block col-lg-4 ml-auto">
+                    <ul class="lawyers-links">
+                        <li class="lawyers-links__item">
+                            <a href="#">Подкатегория услуг первая</a>
+                        </li>
+                        <li class="lawyers-links__item">
+                            <a href="#">Вторая подкатегория</a>
+                        </li>
+                        <li class="lawyers-links__item">
+                            <a href="#">Маленькая услуга</a>
+                        </li>
+                        <li class="lawyers-links__item">
+                            <a href="#">Довольно длинная и замысловатая</a>
+                        </li>
+                        <li class="lawyers-links__item">
+                            <a href="#">Ещё одна</a>
+                        </li>
+                        <li class="lawyers-links__item">
+                            <a href="#">И ещё одна в конце</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="information" id="information">
+        <div class="container d-flex">
+            <div class="information__wrapper">
+                <h2 class="section-title information__title">
+                    Вторая подкатегория
+                </h2>
+                <div class="information__text">
+                    <p>
+                        But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain
+                        was
+                        born
+                        and I will give you a complete account of the system, and expound the actual teachings of the
+                        great
+                        explorer of the truth, the master-builder of human happiness.
+                    </p>
+
+                    <p>
+                        To take a trivial example, which of us ever undertakes laborious physical exercise, except to
+                        obtain
+                        some advantage from it? But who has any right to find fault with a man who chooses to enjoy a
+                        pleasure
+                        that has no annoying consequences, or one who avoids a pain that produces no resultant
+                        pleasure?"
+                    </p>
+
+                    <p>
+                        To take a trivial example, which of us ever undertakes laborious physical exercise, except to
+                        obtain
+                        some advantage from it? But who has any right to find fault with a man who chooses to enjoy a
+                        pleasure
+                        that has no annoying consequences, or one who avoids a pain that produces no resultant
+                        pleasure?"
+                    </p>
+
+                    <p>
+                        Mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete
+                        account
+                        of the system, and expound the actual teachings of the great explorer of the truth, the
+                        master-builder
+                        of human happiness.
+                    </p>
+
+                    <p>
+                        To take a trivial example, which of us ever undertakes laborious physical exercise, except to
+                        obtain
+                        some advantage from it? But who has any right to find fault with a man who chooses to enjoy a
+                        pleasure
+                        that has no annoying consequences, or one who avoids a pain that produces no resultant
+                        pleasure?"
+                    </p>
+
+                    <p>
+                        No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those
+                        who
+                        do
+                        not know how to pursue pleasure rationally encounter consequences that are extremely painful.
+                        Nor
+                        again
+                        is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain,
+                        but
+                        because occasionally circumstances occur in which toil and pain can procure him some great
+                        pleasure.
+                    </p>
+                </div>
+                <div class="consult">
+                    <h5 class="consult__title">
+                        Нужна бесплатная консультация?
+                    </h5>
+                    <div class="consult__wrap d-flex">
+                        <div class="button button_red">
+                            Оставить заявку
+                        </div>
+                        <a href="tel:+380487542356" class="consult__tel">
+                            +38 (048) 754-23-56
+                        </a>
+                    </div>
+                    <p class="consult__descr">
+                        Наши консультанты свяжутся с Вами максимально быстро и ответят на все интересующие Вас вопросы
+                    </p>
+                </div>
+            </div>
+            <div class="aside">
+                <h4 class="aside__title">
+                    Навигация
+                </h4>
+                <div class="aside__wrap">
+                    <a href="#" class="aside__item">Подпункт номер один</a>
+                    <a href="#" class="aside__item">Второй подпункт</a>
+                    <a href="#" class="aside__item">Третья подкатегория c
+                        длинным названием</a>
+                    <a href="#" class="aside__item">Категория номер четыре</a>
+                </div>
+                <h4 class="aside__title">
+                    Отзывы
+                </h4>
+                <div class="slider">
+                    <div class="slider__item">
+                        <img src="img/services/person1.png" alt="CEO" class="slider__img">
+                        <h5 class="slider__title">Валерий Цукерберг</h5>
+                        <p class="slider__text">
+                            al exercise, except to obtain some advantage from it? But who has any right to find fault
+                            with a man who chooses to enjoy
+                        </p>
+                        <a href="https://fb.com" target="_blank"><i class="fab fa-facebook-f slider__link"></i></a>
+                    </div>
+                    <!-- <div class="slider__item">
+                        <img src="img/services/person1.png" alt="manager" class="slider__img">
+                        <h5 class="stider__title">Степан Брин</h5>
+                        <p class="slider__text">
+                            al exercise, except to obtain some advantage from it? But who has any right to find fault
+                            with a man who chooses to enjoy
+                        </p>
+                        <i class="fab fa-facebook-f slider__link"></i>
+                    </div>
+                    <div class="slider__item">
+                        <img src="img/services/person1.png" alt="SEO" class="slider__img">
+                        <h5 class="stider__title">Артем Кук</h5>
+                        <p class="slider__text">
+                            al exercise, except to obtain some advantage from it? But who has any right to find fault
+                            with a man who chooses to enjoy
+                        </p>
+                        <i class="fab fa-facebook-f slider__link"></i>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="about" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            О компании
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Видение, миссия и ценности</a>
+                            <a href="#">Преимущества</a>
+                            <a href="#">Клиенты</a>
+                            <a href="#">Партнеры</a>
+                            <a href="#">Контакты</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Пресс – центр
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Новости</a>
+                            <a href="#">Публикации</a>
+                            <a href="#">Мероприятия</a>
+                            <a href="#">Консультация эксперта</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Услуги
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Legal (Юридическое сопровождение)</a>
+                            <a href="#">Accounting ( Финансовый аутсорсинг)</a>
+                            <a href="#">Business Consulting (Бизнес консалтинг)</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Отрасли
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Аграрный сектор</a>
+                            <a href="#">Внешнеэкономическая деятельность</a>
+                            <a href="#">ИT – бизнес</a>
+                            <a href="#">Оптовая и розничная торговля</a>
+                            <a href="#">Сфера услуг</a>
+                            <a href="#">Транспорт и Логистика</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Образовательный центр
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Про Образовательный Центр</a>
+                            <a href="#">Бизнес-тренинги, семинары, круглые столы</a>
+                            <a href="#">Преимущества</a>
+                            <a href="#">Alumni</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="about__item">
+                        <h5 class="about__title">
+                            Соц. предпринимательство
+                        </h5>
+                        <div class="about__links">
+                            <a href="#">Социальная миссия</a>
+                            <a href="#">Проекты </a>
+                            <a href="#">Партнеры</a>
+                            <a href="#">Консультация эксперта</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="#"><img src="img/footer/logo__footer.png" alt="Logo" class="footer__logo logo"></a>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <div class="footer__info">
+                        <p>
+                            Вы хотите сотрудничать с нами? У Вас есть идеи или предложения? Свяжитесь с нами прямо
+                            сейчас!
+                        </p>
+                        <p>
+                            65000, <br> Украина, г. Одесса <br> Ул Базарная, 36
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-2">
+                    <div class="footer__credits">
+                        <div class="footer__author d-flex">
+                            <span class="letter">W</span>
+                            <p>
+                                Дизайн и разработка <a href="https://github.com/peterkarnaukhsite/peterkarnaukhsite"
+                                    target="_blank" class="ttu">Peter Key</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="footer__policy">
+                        © Все права защищены <strong>LAB Consulting</strong><br>
+                        <a href="#">lab-consult.com</a>
+                    </div>
+                </div>
+                <div class="col-5 col-md-3 col-lg-2 ml-auto">
+                    <a href="#" class="button button_green">
+                        <i class="fas fa-phone"></i>
+                        Заказать звонок
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
