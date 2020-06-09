@@ -14,13 +14,26 @@
     <!-- Fonts -->
     <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet">
     <!-- Styles -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="libs/bootstrap-reboot.css">
     <link rel="stylesheet" href="libs/bootstrap.min.css">
+    <link rel="stylesheet" href="libs/jquery.arcticmodal-0.3.css">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+    <!-- preloader -->
+    <div id="page-preloader">
+        <div class="cssload-main">
+            <div class="cssload-heart">
+                <span class="cssload-heartL"></span>
+                <span class="cssload-heartR"></span>
+                <span class="cssload-square"></span>
+            </div>
+            <div class="cssload-shadow"></div>
+        </div>
+    </div>
+    <!-- preloader -->
 
     <header class="header" id="header">
         <div class="container">
@@ -28,7 +41,7 @@
                 <div class="col-6 col-sm-5 col-md-4 col-xl-4 col-lg-3">
                     <a href="index.html"><img src="img/main/logo.png" alt="Logo" class="logo"></a>
                 </div>
-                <div class="d-none d-lg-block col-lg-7 col-xl-6 justify-content-between">
+                <nav class="d-none d-lg-block col-lg-7 col-xl-6 menu-collapse">
                     <ul class="menu d-flex">
                         <li class="menu__item">
                             <a href="about.html">
@@ -46,7 +59,7 @@
                             </a>
                         </li>
                         <li class="menu__item">
-                            <a href="#">
+                            <a href="#about" class="go">
                                 Отрасли
                             </a>
                         </li>
@@ -56,28 +69,26 @@
                             </a>
                         </li>
                     </ul>
-                </div>
-                <div class="col-6 col-md-3 col-lg-2 ml-auto">
+                </nav>
+                <div class="col-6 col-lg-2 ml-auto d-flex align-items-center">
                     <a href="#" class="button button_green header__button ml-auto">
                         <i class="fas fa-phone"></i>
-                        Заказать звонок
+                        <span>Заказать звонок</span>
+                    </a>
+                    <a class="burger d-lg-none">
+                        <span></span>
                     </a>
                 </div>
             </div>
-            <!-- <div class="col-1 d-block d-xl-none ">
-                    <div class="burger">
-                        <span></span>
-                    </div>
-                </div> -->
-        </div>
         </div>
     </header>
 
-    <section class="about-company" id="about-company">
+
+    <section class="caption" id="caption">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-xl-3">
-                    <h1 class="main-title">
+            <div class="row align-items-center">
+                <div class="col-lg-auto">
+                    <h1 class="caption__title">
                         О компании
                     </h1>
                     <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -91,37 +102,34 @@
                         </ul>
                     </nav>
                 </div>
-                <div class="col-lg-8 col-xl-9">
-                    <ul class="main-links d-flex ml-lg-auto">
+                <nav class="col-lg-auto ml-auto">
+                    <ul class="caption-links d-flex">
                         <li>
-                            <a class="main-links__link" href="#">Видение</a>
+                            <a class="caption-links__link" href="#">Видение</a>
                         </li>
                         <li>
-                            <a class="main-links__link main-links__link_active" href="#">Преимущества</a>
+                            <a class="caption-links__link caption-links__link_active" href="#">Преимущества
+                            </a>
                         </li>
                         <li>
-                            <a class="main-links__link" href="#">Клиенты</a>
+                            <a class="caption-links__link" href="#">Клиенты</a>
                         </li>
                         <li>
-                            <a class="main-links__link" href="#">Партнеры</a>
+                            <a class="caption-links__link" href="#">Партнеры</a>
                         </li>
                         <li>
-                            <a class="main-links__link" href="#">Контакты</a>
+                            <a class="caption-links__link" href="#">Контакты</a>
                         </li>
                     </ul>
-                </div>
+                </nav>
             </div>
         </div>
     </section>
     <section class="advantages" id="advantages">
         <div class="container">
-            <div class="row">
-                <div class="col">
-                    <h2 class="section-title advantages__title">
-                        Преимущества LAB Consult
-                    </h2>
-                </div>
-            </div>
+            <h2 class="section-title advantages__title">
+                Преимущества LAB Consult
+            </h2>
             <div class="row">
                 <div class="col-md-6">
                     <p class="advantages__descr">
@@ -191,25 +199,38 @@
             </div>
             <div class="row">
                 <div class="col-sm-6 col-md-3">
-                    <a href="#" class="power__picture">
+                    <div class="power__picture">
+                        <a href="#" class="power__overlay">
+
+                        </a>
                         <img src="img/about/11.jpg" alt="Наше производство">
-                    </a>
+                    </div>
                 </div>
                 <div class="col-sm-6 col-md-3">
-                    <a href="#" class="power__picture">
-                        <img src="img/about/12.jpg" alt="Наша база">
-                    </a>
+                    <div class="power__picture">
+                        <a href="#" class="power__overlay">
+
+                        </a>
+                        <img src="img/about/12.jpg" alt="Наше производство">
+                    </div>
                 </div>
                 <div class="col-sm-6 col-md-3">
-                    <a href="#" class="power__picture">
-                        <img src="img/about/13.jpg" alt="Наша логистика">
-                    </a>
+                    <div class="power__picture">
+                        <a href="#" class="power__overlay">
+
+                        </a>
+                        <img src="img/about/13.jpg" alt="Наше производство">
+                    </div>
                 </div>
                 <div class="col-sm-6 col-md-3">
-                    <a href="#" class="power__picture">
-                        <img src="img/about/14.jpg" alt="Наша баржа">
-                    </a>
+                    <div class="power__picture">
+                        <a href="#" class="power__overlay">
+
+                        </a>
+                        <img src="img/about/14.jpg" alt="Наше производство">
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -217,92 +238,154 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-6 col-lg-4">
+                    <h2 class="d-none">
+                        Навигация по сайту
+                    </h2>
                     <div class="about__item">
                         <h5 class="about__title">
-                            О компании
+                            <a href="about.html">
+                                О компании
+                            </a>
                         </h5>
-                        <div class="about__links">
-                            <a href="#">Видение, миссия и ценности</a>
-                            <a href="#">Преимущества</a>
-                            <a href="#">Клиенты</a>
-                            <a href="#">Партнеры</a>
-                            <a href="#">Контакты</a>
-                        </div>
+                        <ul class="about__links">
+                            <li>
+                                <a href="#">Видение, миссия и ценности</a>
+                            </li>
+                            <li>
+                                <a href="#">Преимущества</a>
+                            </li>
+                            <li>
+                                <a href="#">Клиенты</a>
+                            </li>
+                            <li>
+                                <a href="#">Партнеры</a>
+                            </li>
+                            <li>
+                                <a href="#">Контакты</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-4">
                     <div class="about__item">
                         <h5 class="about__title">
-                            Пресс – центр
+                            <a href="#">
+                                Пресс-центр
+                            </a>
                         </h5>
-                        <div class="about__links">
-                            <a href="#">Новости</a>
-                            <a href="#">Публикации</a>
-                            <a href="#">Мероприятия</a>
-                            <a href="#">Консультация эксперта</a>
-                        </div>
+                        <ul class="about__links">
+                            <li>
+                                <a href="#">Новости</a>
+                            </li>
+                            <li>
+                                <a href="#">Публикации</a>
+                            </li>
+                            <li>
+                                <a href="#">Мероприятия</a>
+                            </li>
+                            <li>
+                                <a href="#">Консультация эксперта</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-4">
                     <div class="about__item">
                         <h5 class="about__title">
-                            Услуги
+                            <a href="services.html">
+                                Услуги
+                            </a>
                         </h5>
-                        <div class="about__links">
-                            <a href="#">Legal (Юридическое сопровождение)</a>
-                            <a href="#">Accounting ( Финансовый аутсорсинг)</a>
-                            <a href="#">Business Consulting (Бизнес консалтинг)</a>
-                        </div>
+                        <ul class="about__links">
+                            <li>
+                                <a href="#">Legal (Юридическое сопровождение)</a>
+                            </li>
+                            <li>
+                                <a href="#">Accounting ( Финансовый аутсорсинг)</a>
+                            </li>
+                            <li>
+                                <a href="#">Business Consulting (Бизнес консалтинг)</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-4">
                     <div class="about__item">
                         <h5 class="about__title">
-                            Отрасли
+                            <a href="#">
+                                Отрасли
+                            </a>
                         </h5>
-                        <div class="about__links">
-                            <a href="#">Аграрный сектор</a>
-                            <a href="#">Внешнеэкономическая деятельность</a>
-                            <a href="#">ИT – бизнес</a>
-                            <a href="#">Оптовая и розничная торговля</a>
-                            <a href="#">Сфера услуг</a>
-                            <a href="#">Транспорт и Логистика</a>
-                        </div>
+                        <ul class="about__links">
+                            <li>
+                                <a href="#">Аграрный сектор</a>
+                            </li>
+                            <li>
+                                <a href="#">Внешнеэкономическая деятельность</a>
+                            </li>
+                            <li>
+                                <a href="#">ИT – бизнес</a>
+                            </li>
+                            <li>
+                                <a href="#">Оптовая и розничная торговля</a>
+                            </li>
+                            <li>
+                                <a href="#">Сфера услуг</a>
+                            </li>
+                            <li>
+                                <a href="#">Транспорт и Логистика</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-4">
                     <div class="about__item">
                         <h5 class="about__title">
-                            Образовательный центр
+                            <a href="#">Образовательный центр</a>
                         </h5>
-                        <div class="about__links">
-                            <a href="#">Про Образовательный Центр</a>
-                            <a href="#">Бизнес-тренинги, семинары, круглые столы</a>
-                            <a href="#">Преимущества</a>
-                            <a href="#">Alumni</a>
-                        </div>
+                        <ul class="about__links">
+                            <li>
+                                <a href="#">Про Образовательный Центр</a>
+                            </li>
+                            <li>
+                                <a href="#">Бизнес-тренинги, семинары, круглые столы</a>
+                            </li>
+                            <li>
+                                <a href="#">Преимущества</a>
+                            </li>
+                            <li>
+                                <a href="#">Alumni</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-4">
                     <div class="about__item">
                         <h5 class="about__title">
-                            Соц. предпринимательство
+                            <a href="#">Соц. предпринимательство</a>
                         </h5>
-                        <div class="about__links">
-                            <a href="#">Социальная миссия</a>
-                            <a href="#">Проекты </a>
-                            <a href="#">Партнеры</a>
-                            <a href="#">Консультация эксперта</a>
-                        </div>
+                        <ul class="about__links">
+                            <li>
+                                <a href="#">Социальная миссия</a>
+                            </li>
+                            <li>
+                                <a href="#">Проекты </a>
+                            </li>
+                            <li>
+                                <a href="#">Партнеры</a>
+                            </li>
+                            <li>
+                                <a href="#">Консультация эксперта</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    </main>
     <footer class="footer" id="footer">
         <div class="container">
-            <div class="row">
+            <nav class="row">
                 <div class="col-md-4">
                     <a href="#"><img src="img/footer/logo__footer.png" alt="Logo" class="footer__logo logo"></a>
                 </div>
@@ -317,7 +400,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-md-4 col-lg-2">
+                <div class="col-md-4 col-lg-3">
                     <div class="footer__credits">
                         <div class="footer__author d-flex">
                             <span class="letter">W</span>
@@ -332,13 +415,42 @@
                         <a href="#">lab-consult.com</a>
                     </div>
                 </div>
-                <div class="col-5 col-md-3 col-lg-2 ml-auto">
+                <div class="col-md-3 col-lg-2 ml-auto">
                     <a href="#" class="button button_green">
                         <i class="fas fa-phone"></i>
                         Заказать звонок
                     </a>
                 </div>
-            </div>
+            </nav>
         </div>
     </footer>
+
+    <div style="display: none;">
+        <div class="box-modal" id="exampleModal">
+            <div class="box-modal_close arcticmodal-close">x</div>
+            <form class="form">
+                <h5 class="form__title">
+                    Заказать обратный звонок
+                </h5>
+                <p class="form__descr">
+                    Заполните форму и мы свяжемся с вами как можно скорее. До скорой встречи
+                </p>
+                <input type="text" placeholder="Имя" required>
+                <input type="email" placeholder="E-mail" required>
+                <input type="tel" placeholder="Телефон" required>
+                <button type="submit" class="form__button button button_green">
+                    <i class="fas fa-phone"></i>
+                    Заказать звонок
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="libs/jquery-3.5.1.min.js"></script>
+    <script src="libs/parallax-bg.js"></script>
+    <script src="libs/jquery.arcticmodal-0.3.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
+</html>
