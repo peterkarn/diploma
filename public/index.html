@@ -3,62 +3,74 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Кава на всіх — складчина</title>
+<title>Кава на всіх</title>
 <style>
-:root{--bg:#f6f1ea;--card:#fff;--ink:#2a1f17;--mute:#7a6a5c;--accent:#b5541b;--accent2:#8f4012;--ok:#2e7d4f;--line:#e6dccf;--warn:#fff4d6}
-@media (prefers-color-scheme:dark){:root{--bg:#1c1612;--card:#2a211b;--ink:#f3e9de;--mute:#b3a291;--accent:#e0813f;--accent2:#f09a5c;--ok:#5cc08a;--line:#43372d;--warn:#463a1c}}
+:root{--bg:#f6f1ea;--card:#fff;--ink:#2a1f17;--mute:#7a6a5c;--accent:#b5541b;--accent2:#8f4012;--ok:#2e7d4f;--oksoft:#e3f3e9;--line:#e6dccf;--soft:#fbf3e6}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1612;--card:#2a211b;--ink:#f3e9de;--mute:#b3a291;--accent:#e0813f;--accent2:#f09a5c;--ok:#5cc08a;--oksoft:#1f3a2a;--line:#43372d;--soft:#352a20}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-main{max-width:720px;margin:0 auto;padding:16px}
-h1{font-size:26px;margin:8px 0 4px}h2{font-size:18px;margin:0 0 10px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+main{max-width:640px;margin:0 auto;padding:16px 16px 48px}
+h1{font-size:24px;margin:4px 0}h2{font-size:19px;margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
+.card.hero{border:2px solid var(--accent)}
 .mute{color:var(--mute);font-size:14px}
-label{display:block;font-size:14px;font-weight:600;margin:10px 0 4px}
-input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--bg);color:var(--ink)}
-textarea{resize:vertical;min-height:60px}
-button,.btn{display:inline-block;border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--bg);color:var(--ink)}
+input:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+textarea{resize:vertical;min-height:64px}
+button,.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none}
 button:hover,.btn:hover{background:var(--accent2)}
-button.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+.wide{width:100%}
+button.ghost,.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+button.link{background:none;color:var(--accent);padding:0;font-weight:500;text-decoration:underline}
 button.sm{padding:6px 10px;font-size:13px}
 button:disabled{opacity:.5;cursor:default}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1 1 140px}.row>button{flex:0 0 auto}
-.bar{height:16px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0}
-.bar>i{display:block;height:100%;background:var(--accent);transition:width .3s}
-.bar.full>i{background:var(--ok)}
-.big{font-size:22px;font-weight:700}
-.steps{counter-reset:s;padding:0;list-style:none;margin:0}
-.step{display:flex;gap:10px;align-items:center;font-weight:700;margin-bottom:10px}
-.step b{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:14px;flex:none}
-.warn{background:var(--warn);padding:10px 12px;border-radius:10px;font-size:14px;margin-top:10px}
-.err{color:#c0392b;font-size:14px;margin-top:8px;min-height:1em}
-.prev{display:flex;gap:12px;align-items:center;margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:12px}
+a{color:var(--accent)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1 1 150px}
+.inline{display:flex;gap:8px}.inline input{flex:1;min-width:0}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.bar>i{display:block;height:100%;background:var(--accent)}.bar.full>i{background:var(--ok)}
+.how{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.how li{display:flex;gap:10px;align-items:flex-start}
+.how>li>b{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:13px;flex:none;margin-top:1px}
+.err{color:#c0392b;font-size:14px;margin-top:6px}
+.err:empty{display:none}
+.tip{background:var(--soft);padding:10px 12px;border-radius:10px;font-size:14px;margin-top:10px}
+.prev{display:flex;gap:12px;margin-top:14px;padding:14px;background:var(--soft);border-radius:12px}
 .prev img,.item img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex:none;background:var(--line)}
-.qty{display:flex;align-items:center;gap:8px}.qty button{width:36px;padding:8px 0}.qty span{min-width:28px;text-align:center;font-weight:700}
-.person{border-top:1px solid var(--line);padding:12px 0}.person:first-child{border:0}
-.ph{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
-.pn{font-weight:700;font-size:17px}.pt{font-weight:700;font-size:18px;color:var(--accent)}
-.item{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:14px}.item .t{flex:1;min-width:0}
-.item a{color:var(--ink)}a{color:var(--accent)}
-.badge{font-size:12px;padding:3px 8px;border-radius:99px;background:var(--line)}.badge.ok{background:var(--ok);color:#fff}
-.pay{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
-.mono{font:700 20px ui-monospace,Menlo,monospace;letter-spacing:.5px}
-.me{background:var(--warn);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.qty{display:inline-flex;align-items:center;gap:6px}.qty button{width:34px;height:34px;padding:0}.qty span{min-width:22px;text-align:center;font-weight:700}
+.item{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:15px}.item:first-child{border:0}
+.item .t{flex:1;min-width:0}
+.payme{margin-top:16px;padding:16px;border-radius:12px;background:var(--soft)}
+.payme.ok{background:var(--oksoft)}
+.sum{font-size:30px;font-weight:800;line-height:1.1}
+.mono{font:700 19px ui-monospace,Menlo,monospace;letter-spacing:.5px;word-break:break-all}
+.paybox{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td{padding:9px 0;border-top:1px solid var(--line);vertical-align:top}tr:first-child td{border:0}
+td.r{text-align:right;white-space:nowrap;font-weight:700}
+.badge{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--line);white-space:nowrap}.badge.ok{background:var(--ok);color:#fff}
+details{margin-top:6px}summary{cursor:pointer;color:var(--mute);font-size:14px}
+.adminbar{background:var(--ink);color:var(--bg);border-radius:14px;padding:14px 16px;margin:10px 0}
+.adminbar .mute{color:inherit;opacity:.75}
+.adminbar input{background:rgba(255,255,255,.1);color:inherit;border-color:transparent}
+.adminbar .ghost{color:inherit;border-color:rgba(255,255,255,.3)}
 .hide{display:none!important}
-.inline{display:flex;gap:8px;align-items:center}.inline input{flex:1}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
 </style>
 </head>
 <body>
 <main id="app"></main>
 <script>
-const $ = (s, r=document) => r.querySelector(s);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const ls = { get(k){try{return localStorage.getItem(k)||''}catch{return ''}}, set(k,v){try{localStorage.setItem(k,v)}catch{}} };
-let token = ls.get('mh_token'); if (!token) { token = crypto.randomUUID().replace(/-/g,''); ls.set('mh_token', token); }
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ls = { get(k) { try { return localStorage.getItem(k) || '' } catch { return '' } }, set(k, v) { try { localStorage.setItem(k, v) } catch { } } };
+let token = ls.get('mh_token'); if (!token) { token = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()).replace(/-/g, ''); ls.set('mh_token', token); }
 const app = $('#app');
-const m = location.pathname.match(/^\/o\/([\w-]+)/);
-const orderId = m && m[1];
+const orderId = (location.pathname.match(/^\/o\/([\w-]+)/) || [])[1];
 const hashKey = new URLSearchParams(location.hash.slice(1)).get('key');
-if (orderId && hashKey) ls.set('mh_key_' + orderId, hashKey);
+if (orderId && hashKey) { ls.set('mh_key_' + orderId, hashKey); history.replaceState(null, '', location.pathname); }
 const adminKey = orderId ? ls.get('mh_key_' + orderId) : '';
 
 async function api(method, path, body) {
@@ -67,208 +79,256 @@ async function api(method, path, body) {
   if (!r.ok) throw new Error(j.error || 'Помилка ' + r.status);
   return j;
 }
-const money = (n, c) => (Math.round(n * 100) / 100).toLocaleString('uk-UA', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' ' + c;
-const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20) ? b : c); };
-const packs = n => n + ' ' + plural(n, 'пачка', 'пачки', 'пачок');
+const money = (n, c = '₴') => (Math.round(n * 100) / 100).toLocaleString('uk-UA', { maximumFractionDigits: 2 }) + ' ' + c;
+const plural = (n, a, b, c) => { const d = n % 10, h = n % 100; return d === 1 && h !== 11 ? a : (d >= 2 && d <= 4 && (h < 10 || h >= 20) ? b : c); };
+const packs = n => n + ' ' + plural(n, 'пачка', 'пачки', 'пачок');
 async function copy(text, btn) {
   try { await navigator.clipboard.writeText(text); } catch { const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
-  if (btn) { const o = btn.textContent; btn.textContent = 'Скопійовано ✓'; setTimeout(() => btn.textContent = o, 1500); }
+  if (btn) { const o = btn.innerHTML; btn.textContent = 'Скопійовано ✓'; setTimeout(() => btn.innerHTML = o, 1500); }
 }
 
-/* ---------- Форма налаштувань (створення / редагування) ---------- */
+/* ================= Налаштування організатора ================= */
 function settingsForm(o = {}) {
   const p = o.payment || {};
   return `
-  <label>Назва замовлення</label><input id="f_title" value="${esc(o.title || 'Кава від MadHeads')}">
-  <label>Хто замовляє на сайті й збирає гроші (імʼя)</label><input id="f_org" value="${esc(o.organizer || '')}" placeholder="Напр. Петро (можна не ви)">
-  <label>Куди відправляти (місто, відділення Нової пошти, імʼя та телефон отримувача)</label>
-  <textarea id="f_addr" placeholder="Київ, Нова пошта №12, Петро Іванов, +380…">${esc(o.address || '')}</textarea>
-  <label>Номер картки того, хто замовляє</label><input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
-  <label>Імʼя власника картки (необовʼязково)</label><input id="f_holder" value="${esc(p.holder || '')}">
-  <label>Або посилання на банку / оплату (необовʼязково)</label><input id="f_link" value="${esc(p.link || '')}" placeholder="https://send.monobank.ua/jar/…">
-  <label>Коментар для учасників (необовʼязково)</label><input id="f_note" value="${esc(p.note || '')}" placeholder="Напр. Скидайте до пʼятниці">
-  <div class="row">
-    <div><label>Мінімум пачок для опту</label><input id="f_min" type="number" min="1" value="${o.minPacks || 16}"></div>
-    <div><label>Доставка на всіх, разом (0, якщо безкоштовна)</label><input id="f_ship" type="number" min="0" step="any" value="${o.shipping || 0}"></div>
-  </div>`;
+  <label>Імʼя того, хто замовляє і збирає гроші</label>
+  <input id="f_org" value="${esc(o.organizer || '')}" placeholder="Напр. Петро">
+  <label>Номер картки для переказу</label>
+  <input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
+  <label>або посилання на банку <span class="mute">(необовʼязково)</span></label>
+  <input id="f_link" value="${esc(p.link || '')}" placeholder="https://send.monobank.ua/jar/…">
+  <details ${o.id ? 'open' : ''}><summary>Додатково: адреса, мінімум пачок, доставка, назва</summary>
+    <label>Куди приїде посилка <span class="mute">(щоб ніхто не питав)</span></label>
+    <textarea id="f_addr" placeholder="Київ, Нова пошта №12">${esc(o.address || '')}</textarea>
+    <label>Отримувач на картці <span class="mute">(щоб люди бачили, що переказують правильно)</span></label>
+    <input id="f_holder" value="${esc(p.holder || '')}" placeholder="Петро І.">
+    <label>Коментар для всіх</label>
+    <input id="f_note" value="${esc(p.note || '')}" placeholder="Напр. Скидайте до пʼятниці, замовляю в суботу">
+    <div class="row">
+      <div><label>Мінімум пачок для опту</label><input id="f_min" type="number" min="1" value="${o.minPacks || 16}"></div>
+      <div><label>Доставка всього, ₴</label><input id="f_ship" type="number" min="0" step="any" value="${o.shipping || 0}"></div>
+    </div>
+    <label>Назва замовлення</label><input id="f_title" value="${esc(o.title || 'Кава від MadHeads')}">
+  </details>`;
 }
 function readSettings() {
   return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
     payment: { card: $('#f_card').value, holder: $('#f_holder').value, link: $('#f_link').value, note: $('#f_note').value } };
 }
 
-/* ---------- Сторінка створення ---------- */
+/* ================= Головна: створити замовлення ================= */
 function renderHome() {
-  document.title = 'Кава на всіх — складчина';
   app.innerHTML = `
   <h1>☕ Кава на всіх</h1>
-  <p class="mute">Замовляєте каву MadHeads разом із друзями? Створіть спільне замовлення — друзі самі вставлять посилання на каву, а ви побачите, хто скільки пачок бере і скільки має вам скинути.</p>
-  <div class="card"><h2>Створіть замовлення (1 хвилина)</h2>${settingsForm()}
-    <p class="mute">Це бачитимуть усі учасники: так їм не доведеться питати у вас, куди і скільки скидати.</p>
-    <button id="create">Створити і отримати посилання для друзів</button><div class="err" id="err"></div></div>`;
+  <p class="mute">Спільне оптове замовлення кави MadHeads з друзями — без переписок «скільки я винен і куди кидати».</p>
+  <div class="card">
+    <h2>Як це працює</h2>
+    <ol class="how">
+      <li><b>1</b><div>Ви вказуєте, кому скидати гроші, — і отримуєте <b>посилання</b>.</div></li>
+      <li><b>2</b><div>Кидаєте його друзям у чат. Кожен вставляє посилання на свою каву з MadHeads і бачить, <b>скільки і куди скинути</b>.</div></li>
+      <li><b>3</b><div>Ви бачите, хто що бере, скільки пачок набрано, і відмічаєте, хто вже оплатив.</div></li>
+    </ol>
+  </div>
+  <div class="card hero">
+    <h2>Створити замовлення</h2>
+    ${settingsForm()}
+    <button id="create" class="wide" style="margin-top:16px">Створити й отримати посилання →</button>
+    <div class="err" id="err"></div>
+  </div>
+  <p class="mute">Вам надіслали посилання? Просто відкрийте його — тут нічого створювати не треба.</p>`;
   $('#create').onclick = async e => {
     e.target.disabled = true;
     try {
       const s = readSettings();
-      if (!s.organizer.trim()) throw new Error('Вкажіть своє імʼя.');
+      if (!s.organizer.trim()) throw new Error('Вкажіть імʼя того, хто замовляє.');
+      if (!s.payment.card.trim() && !s.payment.link.trim()) throw new Error('Вкажіть картку або посилання на банку — інакше друзі не знатимуть, куди скидати.');
       const r = await api('POST', '/orders', s);
       ls.set('mh_key_' + r.id, r.adminKey);
-      ls.set('mh_name', s.organizer.trim());
+      ls.set('mh_new_' + r.id, '1');
       location.href = `/o/${r.id}#key=${r.adminKey}`;
     } catch (er) { $('#err').textContent = er.message; e.target.disabled = false; }
   };
 }
 
-/* ---------- Сторінка замовлення ---------- */
-let order = null, preview = null, editing = false, busy = false;
+/* ================= Сторінка замовлення ================= */
+let order = null, preview = null, editing = false, busy = false, renaming = false;
+const myName = () => ls.get('mh_name_' + orderId) || ls.get('mh_name');
 
 function calc(o) {
   const by = {};
-  for (const i of o.items) { (by[i.person] ||= { name: i.person, items: [], packs: 0, sum: 0 }); const p = by[i.person]; p.items.push(i); p.packs += i.qty; p.sum += i.qty * i.price; }
+  for (const i of o.items) { const p = (by[i.person] ||= { name: i.person, items: [], packs: 0, sum: 0 }); p.items.push(i); p.packs += i.qty; p.sum += i.qty * i.price; }
   const list = Object.values(by);
-  const total = list.reduce((s, p) => s + p.packs, 0);
-  const sum = list.reduce((s, p) => s + p.sum, 0);
-  list.forEach(p => { p.ship = total ? o.shipping * p.packs / total : 0; p.pay = p.sum + p.ship; });
+  const total = list.reduce((s, p) => s + p.packs, 0), sum = list.reduce((s, p) => s + p.sum, 0);
+  list.forEach(p => { p.ship = total ? o.shipping * p.packs / total : 0; p.pay = Math.ceil(p.sum + p.ship); });
   return { list, total, sum };
 }
 
 function summaryText(o, c) {
   const agg = {};
-  o.items.forEach(i => { const k = i.name; (agg[k] ||= { qty: 0, url: i.url }).qty += i.qty; });
-  let t = `${o.title}\nУсього: ${packs(c.total)}, ${money(c.sum + o.shipping, o.currency)}\n\nЩо замовляти:\n`;
-  t += Object.entries(agg).map(([n, a]) => `• ${n} — ${a.qty} шт.${a.url ? '\n  ' + a.url : ''}`).join('\n');
-  t += '\n\nХто скільки скидає:\n' + c.list.map(p => `• ${p.name}: ${packs(p.packs)} → ${money(Math.ceil(p.pay), o.currency)}${o.paid[p.name] ? ' ✓' : ''}`).join('\n');
-  return t;
+  o.items.forEach(i => { (agg[i.name] ||= { qty: 0, url: i.url }).qty += i.qty; });
+  return `${o.title}: ${packs(c.total)}, ${money(c.sum + o.shipping)}\n\nЩО ЗАМОВЛЯТИ:\n` +
+    Object.entries(agg).map(([n, a]) => `• ${n} — ${a.qty} шт.${a.url ? '\n  ' + a.url : ''}`).join('\n') +
+    '\n\nХТО СКІЛЬКИ СКИДАЄ:\n' + c.list.map(p => `• ${p.name}: ${packs(p.packs)} → ${money(p.pay)}${o.paid[p.name] ? ' ✓ оплачено' : ''}`).join('\n');
 }
 
 function renderOrder() {
-  const o = order, c = calc(o), cur = o.currency, myName = ls.get('mh_name');
+  const o = order, c = calc(o), name = myName();
   document.title = o.title;
-  const pct = Math.min(100, Math.round(c.total / o.minPacks * 100));
-  const left = o.minPacks - c.total;
-  const pay = o.payment, link = location.origin + '/o/' + o.id;
-  const mine = c.list.find(p => p.name.toLowerCase() === myName.toLowerCase());
-  const hasPay = pay.card || pay.link;
+  const left = o.minPacks - c.total, pct = Math.min(100, Math.round(c.total / o.minPacks * 100));
+  const me = name && c.list.find(p => p.name.toLowerCase() === name.toLowerCase());
+  const myItems = o.items.filter(i => i.mine);
+  const link = location.origin + '/o/' + o.id;
+  const isNew = ls.get('mh_new_' + o.id);
 
   app.innerHTML = `
-  <h1>☕ ${esc(o.title)}</h1>
-  <div class="mute">Замовляє: <b>${esc(o.organizer)}</b></div>
+  ${o.isAdmin ? adminBar(o, c, link, isNew) : ''}
 
-  ${o.isAdmin ? `<div class="card"><h2>Ви організатор</h2>
-    <p class="mute" style="margin-top:0">Надішліть друзям це посилання — більше нічого пояснювати не треба:</p>
-    <div class="inline"><input readonly value="${esc(link)}" onclick="this.select()"><button id="cplink">Скопіювати</button></div>
-    <p class="mute">Замовляєте не ви? Змініть імʼя, картку й адресу в налаштуваннях нижче — або передайте тому, хто замовляє, <a href="#" id="cpadmin">адмінське посилання</a> (воно дає право відмічати оплати). Себе як учасника додайте так само, як усі, — у кроці 1.</p>
-    <div class="row" style="margin-top:8px"><button class="ghost sm" id="edit">⚙ Змінити налаштування (картка, адреса…)</button>
-    <button class="ghost sm" id="cpsum">📋 Скопіювати зведення для замовлення</button></div>
-    <div id="editbox" class="${editing ? '' : 'hide'}">${settingsForm(o)}<button id="saveset">Зберегти</button><div class="err" id="err2"></div></div></div>` : ''}
+  <div class="top"><h1>☕ ${esc(o.title)}</h1></div>
+  <div class="mute">Збирає і замовляє: <b>${esc(o.organizer)}</b></div>
+  <div class="bar ${left <= 0 ? 'full' : ''}"><i style="width:${pct}%"></i></div>
+  <div class="mute">${left > 0 ? `Набрано ${packs(c.total)} з ${o.minPacks} — бракує ще <b>${packs(left)}</b> до оптової ціни` : `🎉 Набрано ${packs(c.total)} — мінімум для опту є!`}</div>
 
-  <div class="card">
-    <div class="big">${packs(c.total)} з ${o.minPacks}</div>
-    <div class="bar ${left <= 0 ? 'full' : ''}"><i style="width:${pct}%"></i></div>
-    <div>${left > 0 ? `Ще потрібно <b>${packs(left)}</b>, щоб набрати оптове замовлення.` : '🎉 Мінімум набрано — організатор може оформлювати замовлення.'}</div>
-    <div class="mute">Загалом: ${money(c.sum + o.shipping, cur)}${o.shipping ? ` (з доставкою ${money(o.shipping, cur)})` : ''}</div>
+  <div class="card hero">
+    ${!name || renaming ? `
+      <h2>Як вас звати?</h2>
+      <p class="mute" style="margin:0">Щоб ${esc(o.organizer)} знав(-ла), чия це кава і від кого переказ.</p>
+      <div class="inline" style="margin-top:10px"><input id="name" value="${esc(name)}" placeholder="Ваше імʼя" autocomplete="given-name"><button id="saveName">Далі →</button></div>
+      <div class="err" id="err"></div>`
+    : `
+      <div class="top"><h2>${myItems.length ? 'Ваша кава' : 'Що берете, ' + esc(name) + '?'}</h2><button class="link sm" id="rename">Я не ${esc(name)}</button></div>
+      ${myItems.length ? `<div>${myItems.map(i => itemRow(i, true)).join('')}</div>` : ''}
+      ${addCoffee(myItems.length)}
+      ${me ? payBlock(o, me) : ''}`}
   </div>
 
-  <div class="card">
-    <div class="step"><b>1</b> Оберіть каву на сайті MadHeads і вставте посилання</div>
-    <p class="mute" style="margin-top:-4px">Відкрийте сторінку потрібної кави на MadHeads, скопіюйте адресу з рядка браузера й вставте нижче.</p>
-    <label>Ваше імʼя</label><input id="name" value="${esc(myName)}" placeholder="Як вас підписати" autocomplete="given-name">
-    <label>Посилання на каву</label>
-    <div class="inline"><input id="url" placeholder="Вставте посилання сюди" inputmode="url"><button id="fetch">Підтягнути</button></div>
-    <div class="err" id="err"></div>
-    <div id="prevbox">${preview ? previewHtml(preview, cur) : ''}</div>
-  </div>
+  ${c.list.length ? `<div class="card">
+    <h2>Усе замовлення</h2>
+    <table>${c.list.map(p => `<tr><td><b>${esc(p.name)}</b> <span class="mute">${packs(p.packs)}</span>
+        <details><summary>що бере</summary>${p.items.map(i => itemRow(i, o.isAdmin && !i.mine)).join('')}${p.ship ? `<div class="mute">+ доставка ${money(p.ship)}</div>` : ''}</details></td>
+      <td class="r">${money(p.pay)}<br>${o.paid[p.name] ? '<span class="badge ok">оплачено</span>' : '<span class="badge">не оплачено</span>'}
+        ${o.isAdmin ? `<br><button class="link sm" data-paid="${esc(p.name)}" data-v="${o.paid[p.name] ? 0 : 1}">${o.paid[p.name] ? 'зняти' : 'отримав ✓'}</button>` : ''}</td></tr>`).join('')}
+      <tr><td><b>Разом</b> <span class="mute">${packs(c.total)}</span></td><td class="r">${money(c.sum + o.shipping)}</td></tr>
+    </table></div>` : ''}
 
-  <div class="card">
-    <div class="step"><b>2</b> Хто що бере і скільки скинути</div>
-    ${mine ? `<div class="me">Вам скинути: <span class="big">${money(Math.ceil(mine.pay), cur)}</span>${o.paid[mine.name] ? ' <span class="badge ok">оплачено ✓</span>' : ''}<div class="mute">${packs(mine.packs)}${mine.ship ? `, у т.ч. доставка ${money(mine.ship, cur)}` : ''}</div></div>` : ''}
-    ${c.list.length ? c.list.map(p => personHtml(p, o)).join('') : '<p class="mute">Поки ніхто нічого не додав. Будьте першим!</p>'}
-  </div>
+  ${o.address ? `<div class="card"><h2>Куди приїде посилка</h2><div>${esc(o.address).replace(/\n/g, '<br>')}</div><p class="mute" style="margin-bottom:0">Звідти ${esc(o.organizer)} роздасть каву.</p></div>` : ''}
+  ${!o.isAdmin ? `<p class="mute" style="text-align:center">Це ви збираєте замовлення? <a href="/">Створити своє</a></p>` : ''}`;
+  bind();
+}
 
-  <div class="card">
-    <div class="step"><b>3</b> Куди скидати гроші</div>
-    ${hasPay ? `
-      ${pay.card ? `<div class="pay"><span class="mono">${esc(pay.card)}</span><button class="sm" data-copy="${esc(pay.card.replace(/\s/g, ''))}">Скопіювати номер</button></div>` : ''}
-      ${pay.holder ? `<div class="mute">Отримувач: ${esc(pay.holder)}</div>` : ''}
-      ${pay.link ? `<div class="pay"><a class="btn" href="${esc(pay.link)}" target="_blank" rel="noopener">Відкрити банку / оплату →</a></div>` : ''}
-      ${pay.note ? `<div class="mute">${esc(pay.note)}</div>` : ''}`
-      : '<p class="mute">Організатор ще не вказав реквізити.</p>'}
-    ${o.address ? `<h2 style="margin-top:16px">Доставка</h2><div>${esc(o.address).replace(/\n/g, '<br>')}</div>` : ''}
+function adminBar(o, c, link, isNew) {
+  return `<div class="adminbar">
+    <div><b>${isNew ? '✅ Замовлення створено! ' : ''}Ви організатор.</b> ${isNew ? 'Тепер надішліть це посилання друзям у чат:' : 'Посилання для друзів:'}</div>
+    <div class="inline" style="margin-top:8px"><input readonly value="${esc(link)}" onclick="this.select()"><button id="cplink">Скопіювати</button></div>
+    <div class="row" style="margin-top:10px">
+      <button class="ghost sm" id="cpsum">📋 Зведення для замовлення</button>
+      <button class="ghost sm" id="edit">⚙ Картка, адреса…</button>
+      <button class="ghost sm" id="cpadmin">🔑 Посилання організатора</button>
+    </div>
+    <div class="mute" style="margin-top:8px;font-size:13px">«Посилання організатора» — щоб відкрити цю панель з іншого пристрою або передати її тому, хто замовлятиме. Друзям його не давайте.</div>
+    <div id="editbox" class="${editing ? '' : 'hide'}" style="margin-top:6px">${settingsForm(o)}<button id="saveset" style="margin-top:12px">Зберегти</button><div class="err" id="err2"></div></div>
   </div>`;
+}
 
-  // події
-  $('#fetch').onclick = doPreview;
-  $('#url').onkeydown = e => { if (e.key === 'Enter') doPreview(); };
-  $('#name').oninput = e => ls.set('mh_name', e.target.value.trim());
-  bindPreview();
-  app.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copy(b.dataset.copy, b));
-  app.querySelectorAll('[data-del]').forEach(b => b.onclick = () => act(() => api('DELETE', `/orders/${o.id}/items/${b.dataset.del}`)));
-  app.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { const [id, q] = b.dataset.q.split(':'); if (+q >= 1) act(() => api('PATCH', `/orders/${o.id}/items/${id}`, { qty: +q })); });
-  app.querySelectorAll('[data-paid]').forEach(b => b.onclick = () => act(() => api('POST', `/orders/${o.id}/paid`, { person: b.dataset.paid, paid: b.dataset.v === '1' })));
+function itemRow(i, editable) {
+  return `<div class="item">${i.image ? `<img src="${esc(i.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+    <div class="t">${i.url ? `<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.name)}</a>` : esc(i.name)}
+      <div class="mute">${i.qty} × ${money(i.price)} = ${money(i.qty * i.price)}</div></div>
+    ${editable ? `<div class="qty"><button class="ghost" data-q="${i.id}:${i.qty - 1}" ${i.qty <= 1 ? 'disabled' : ''}>−</button><span>${i.qty}</span><button class="ghost" data-q="${i.id}:${i.qty + 1}">+</button><button class="ghost" data-del="${i.id}" title="Прибрати">✕</button></div>` : ''}</div>`;
+}
+
+function addCoffee(hasItems) {
+  if (preview) return `<div class="prev">${preview.image ? `<img src="${esc(preview.image)}" alt="" onerror="this.remove()">` : ''}
+    <div style="flex:1;min-width:0">
+      <label style="margin-top:0">Кава</label><input id="pv_name" value="${esc(preview.name)}" placeholder="Назва кави">
+      <div class="row">
+        <div><label>Ціна за пачку, ₴</label><input id="pv_price" type="number" min="0" step="any" value="${preview.price || ''}" placeholder="0"></div>
+        <div><label>Скільки пачок</label><div class="qty"><button class="ghost" id="qm">−</button><span id="pv_qty">${preview.qty}</span><button class="ghost" id="qp">+</button></div></div>
+      </div>
+      ${preview.warning ? `<div class="tip">⚠️ ${esc(preview.warning)}</div>` : ''}
+      <div class="row" style="margin-top:14px"><button id="add">Додати</button><button class="ghost" id="cancel" style="flex:0 0 auto">Скасувати</button></div>
+      <div class="err" id="err3"></div>
+    </div></div>`;
+  return `
+    ${hasItems ? '<label>Додати ще одну каву</label>' : `<ol class="how" style="margin-bottom:12px">
+      <li><b>1</b><div>Відкрийте сайт MadHeads і знайдіть каву, яку хочете.</div></li>
+      <li><b>2</b><div>Скопіюйте адресу сторінки з рядка браузера (або «Поділитися → Копіювати»).</div></li>
+      <li><b>3</b><div>Вставте її сюди 👇</div></li></ol>`}
+    <div class="inline"><input id="url" placeholder="Вставте посилання на каву" inputmode="url"><button id="fetch">Додати</button></div>
+    <div class="err" id="err"></div>`;
+}
+
+function payBlock(o, me) {
+  const p = o.payment, paid = o.paid[me.name];
+  if (paid) return `<div class="payme ok"><div class="sum">✓ ${money(me.pay)} оплачено</div><div class="mute">${esc(o.organizer)} підтвердив(-ла) переказ. Дякуємо!</div></div>`;
+  return `<div class="payme">
+    <div class="mute">Вам скинути ${esc(o.organizer)}</div>
+    <div class="sum">${money(me.pay)}</div>
+    <div class="mute">${packs(me.packs)}${me.ship ? ` · з них доставка ${money(me.ship)}` : ''}</div>
+    ${p.card ? `<div class="paybox"><span class="mono">${esc(p.card)}</span><button class="sm" data-copy="${esc(p.card.replace(/\s/g, ''))}">Копіювати картку</button></div>` : ''}
+    ${p.holder ? `<div class="mute">Отримувач: ${esc(p.holder)}</div>` : ''}
+    ${p.link ? `<div class="paybox"><a class="btn" href="${esc(p.link)}" target="_blank" rel="noopener">Оплатити через банку →</a></div>` : ''}
+    ${!p.card && !p.link ? '<div class="tip">Організатор ще не вказав, куди скидати. Зазирніть сюди трохи пізніше.</div>' : ''}
+    ${p.note ? `<div class="tip">💬 ${esc(p.note)}</div>` : ''}
+    <div class="mute" style="margin-top:8px">${money(me.pay)} — у коментарі до переказу напишіть «${esc(me.name)}, кава». Коли ${esc(o.organizer)} отримає, тут зʼявиться «оплачено».</div>
+  </div>`;
+}
+
+function bind() {
+  const o = order;
+  const nameInput = $('#name');
+  if (nameInput) {
+    const go = () => { const v = nameInput.value.trim(); if (!v) { $('#err').textContent = 'Напишіть імʼя.'; return; } ls.set('mh_name_' + o.id, v); ls.set('mh_name', v); renaming = false; renderOrder(); $('#url')?.focus(); };
+    $('#saveName').onclick = go; nameInput.onkeydown = e => { if (e.key === 'Enter') go(); };
+  }
+  $('#rename') && ($('#rename').onclick = () => { renaming = true; renderOrder(); $('#name').focus(); });
+  if ($('#fetch')) {
+    $('#fetch').onclick = doPreview;
+    $('#url').onkeydown = e => { if (e.key === 'Enter') doPreview(); };
+    $('#url').onpaste = () => setTimeout(doPreview, 50); // вставили — одразу підтягуємо
+  }
+  if (preview) {
+    const set = d => { preview.qty = Math.min(100, Math.max(1, preview.qty + d)); $('#pv_qty').textContent = preview.qty; };
+    $('#qm').onclick = () => set(-1); $('#qp').onclick = () => set(1);
+    $('#cancel').onclick = () => { preview = null; renderOrder(); };
+    $('#add').onclick = async () => {
+      try { order = await api('POST', `/orders/${o.id}/items`, { person: myName(), url: preview.url, image: preview.image, name: $('#pv_name').value, price: $('#pv_price').value, qty: preview.qty }); preview = null; renderOrder(); }
+      catch (er) { $('#err3').textContent = er.message; }
+    };
+    if (!preview.price) $('#pv_price').focus();
+  }
+  $$('[data-copy]').forEach(b => b.onclick = () => copy(b.dataset.copy, b));
+  $$('[data-del]').forEach(b => b.onclick = () => confirm('Прибрати цю каву?') && act(() => api('DELETE', `/orders/${o.id}/items/${b.dataset.del}`)));
+  $$('[data-q]').forEach(b => b.onclick = () => { const [id, q] = b.dataset.q.split(':'); if (+q >= 1) act(() => api('PATCH', `/orders/${o.id}/items/${id}`, { qty: +q })); });
+  $$('[data-paid]').forEach(b => b.onclick = () => act(() => api('POST', `/orders/${o.id}/paid`, { person: b.dataset.paid, paid: b.dataset.v === '1' })));
   if (o.isAdmin) {
-    $('#cplink').onclick = e => copy(link, e.target);
-    $('#cpadmin').onclick = e => { e.preventDefault(); copy(`${link}#key=${adminKey}`, e.target); };
-    $('#cpsum').onclick = e => copy(summaryText(o, c), e.target);
+    const link = location.origin + '/o/' + o.id;
+    $('#cplink').onclick = e => { copy(link, e.target); ls.set('mh_new_' + o.id, ''); };
+    $('#cpadmin').onclick = e => copy(`${link}#key=${adminKey}`, e.target);
+    $('#cpsum').onclick = e => copy(summaryText(o, calc(o)), e.target);
     $('#edit').onclick = () => { editing = !editing; $('#editbox').classList.toggle('hide', !editing); };
     $('#saveset').onclick = async () => { try { order = await api('PUT', '/orders/' + o.id, readSettings()); editing = false; renderOrder(); } catch (er) { $('#err2').textContent = er.message; } };
   }
 }
 
-function personHtml(p, o) {
-  const cur = o.currency;
-  return `<div class="person"><div class="ph"><div><span class="pn">${esc(p.name)}</span> <span class="mute">${packs(p.packs)}</span>
-    ${o.paid[p.name] ? '<span class="badge ok">оплачено ✓</span>' : '<span class="badge">чекаємо оплату</span>'}</div>
-    <div class="pt">${money(Math.ceil(p.pay), cur)}</div></div>
-    ${p.items.map(i => `<div class="item">${i.image ? `<img src="${esc(i.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
-      <div class="t">${i.url ? `<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.name)}</a>` : esc(i.name)}<div class="mute">${i.qty} × ${money(i.price, cur)} = ${money(i.qty * i.price, cur)}</div></div>
-      ${(i.mine || o.isAdmin) ? `<div class="qty"><button class="ghost sm" data-q="${i.id}:${i.qty - 1}">−</button><span>${i.qty}</span><button class="ghost sm" data-q="${i.id}:${i.qty + 1}">+</button>
-      <button class="ghost sm" data-del="${i.id}" title="Видалити">✕</button></div>` : ''}</div>`).join('')}
-    ${p.ship ? `<div class="mute" style="margin-top:6px">Доставка на ${esc(p.name)}: ${money(p.ship, cur)}</div>` : ''}
-    ${o.isAdmin ? `<div style="margin-top:8px"><button class="ghost sm" data-paid="${esc(p.name)}" data-v="${o.paid[p.name] ? 0 : 1}">${o.paid[p.name] ? 'Зняти відмітку оплати' : '✓ Відмітити як оплачено'}</button></div>` : ''}</div>`;
-}
-
-function previewHtml(pv, cur) {
-  return `<div class="prev">${pv.image ? `<img src="${esc(pv.image)}" alt="" onerror="this.remove()">` : ''}
-    <div style="flex:1;min-width:0"><label style="margin-top:0">Назва</label><input id="pv_name" value="${esc(pv.name)}" placeholder="Назва кави">
-    <div class="row"><div><label>Ціна за пачку, ${esc(cur)}</label><input id="pv_price" type="number" min="0" step="any" value="${pv.price || ''}" placeholder="0"></div>
-    <div><label>Скільки пачок</label><div class="qty"><button class="ghost sm" id="qm">−</button><span id="pv_qty">${pv.qty || 1}</span><button class="ghost sm" id="qp">+</button></div></div></div>
-    ${pv.warning ? `<div class="warn">${esc(pv.warning)}</div>` : ''}
-    <div style="margin-top:12px"><button id="add">Додати до замовлення</button></div><div class="err" id="err3"></div></div></div>`;
-}
-function bindPreview() {
-  if (!preview) return;
-  const set = d => { preview.qty = Math.min(100, Math.max(1, (preview.qty || 1) + d)); $('#pv_qty').textContent = preview.qty; };
-  $('#qm').onclick = () => set(-1); $('#qp').onclick = () => set(1);
-  $('#add').onclick = async e => {
-    const person = $('#name').value.trim();
-    try {
-      if (!person) { $('#name').focus(); throw new Error('Спочатку впишіть своє імʼя.'); }
-      ls.set('mh_name', person);
-      order = await api('POST', `/orders/${order.id}/items`, { person, url: preview.url, image: preview.image, name: $('#pv_name').value, price: $('#pv_price').value, qty: preview.qty || 1 });
-      preview = null; renderOrder();
-    } catch (er) { $('#err3').textContent = er.message; }
-  };
-}
-
 async function doPreview() {
-  const url = $('#url').value.trim(), b = $('#fetch');
+  const input = $('#url'), b = $('#fetch'), url = input.value.trim();
   $('#err').textContent = '';
-  if (!url) { $('#err').textContent = 'Вставте посилання на каву.'; return; }
-  b.disabled = true; b.textContent = 'Читаю…';
-  try { preview = { ...(await api('POST', '/preview', { url })), qty: 1 }; const keepName = $('#name').value; renderOrder(); $('#name').value = keepName; $('#url').value = url; }
-  catch (er) { $('#err').textContent = er.message; b.disabled = false; b.textContent = 'Підтягнути'; }
+  if (!url) { $('#err').textContent = 'Вставте посилання на сторінку кави з сайту MadHeads.'; return; }
+  if (b.disabled) return;
+  b.disabled = true; b.textContent = 'Шукаю…';
+  try { preview = { ...(await api('POST', '/preview', { url })), qty: 1 }; renderOrder(); }
+  catch (er) { $('#err').textContent = er.message; b.disabled = false; b.textContent = 'Додати'; }
 }
 
 async function act(fn) { if (busy) return; busy = true; try { order = await fn(); renderOrder(); } catch (e) { alert(e.message); } busy = false; }
 
 async function load() {
   try { order = await api('GET', '/orders/' + orderId); renderOrder(); }
-  catch (e) { app.innerHTML = `<div class="card"><h2>Не вдалося відкрити замовлення</h2><p>${esc(e.message)}</p><a class="btn" href="/">Створити нове</a></div>`; return; }
-  // оновлення «наживо», не заважаючи введенню
+  catch (e) { app.innerHTML = `<div class="card"><h2>Замовлення не знайдено</h2><p>${esc(e.message)}</p><a class="btn" href="/">Створити нове</a></div>`; return; }
   setInterval(async () => {
     const a = document.activeElement;
-    if (busy || editing || preview || (a && /INPUT|TEXTAREA/.test(a.tagName) && a.value)) return;
-    try { const n = await api('GET', '/orders/' + orderId); if (JSON.stringify(n) !== JSON.stringify(order)) { order = n; renderOrder(); } } catch {}
+    if (busy || editing || preview || renaming || (a && /INPUT|TEXTAREA/.test(a.tagName) && a.value && !a.readOnly)) return;
+    try { const n = await api('GET', '/orders/' + orderId); if (JSON.stringify(n) !== JSON.stringify(order)) { order = n; renderOrder(); } } catch { }
   }, 5000);
 }
 
