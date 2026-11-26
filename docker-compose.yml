@@ -1,0 +1,8 @@
+services:
+  coffee:
+    build: .
+    restart: unless-stopped
+    ports: ["2345:2345"]
+    volumes: ["./data:/data"]
+    environment:
+      ALLOWED_HOSTS: madheads   # з яких сайтів можна підтягувати товари
