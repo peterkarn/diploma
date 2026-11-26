@@ -7,7 +7,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { parseProduct } = require('./lib/parse');
 
-const PORT = Number(process.env.PORT || 3000);
+const PORT = Number(process.env.PORT || 2345);
 const HOST = process.env.HOST || '0.0.0.0';
 const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data', 'data.json');
 // Із яких сайтів дозволено підтягувати товари (підрядок у hostname). Захист від SSRF.

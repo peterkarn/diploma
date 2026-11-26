@@ -6,15 +6,15 @@
 ## Запуск локально
 Потрібен лише Node.js 18+ (залежностей немає):
 
-    node server.js        # http://localhost:3000
+    node server.js        # http://localhost:2345
 
 Дані зберігаються у `data/data.json`. Тест: `npm test`.
 
 ## Hetzner
     git clone <repo> && cd <repo>
-    docker compose up -d --build        # порт 3000, дані в ./data
+    docker compose up -d --build        # порт 2345, дані в ./data
 
-Для HTTPS поставте перед ним Caddy: `caddy reverse-proxy --from your.domain --to localhost:3000`.
+Для HTTPS поставте перед ним Caddy: `caddy reverse-proxy --from your.domain --to localhost:2345`.
 Без Docker: `PORT=80 node server.js` (або systemd-юніт із `node server.js`).
 
 ## Нотатки
