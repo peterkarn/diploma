@@ -80,10 +80,10 @@ function settingsForm(o = {}) {
   const p = o.payment || {};
   return `
   <label>Назва замовлення</label><input id="f_title" value="${esc(o.title || 'Кава від MadHeads')}">
-  <label>Ваше імʼя (ви замовляєте і збираєте гроші)</label><input id="f_org" value="${esc(o.organizer || '')}" placeholder="Напр. Петро">
+  <label>Хто замовляє на сайті й збирає гроші (імʼя)</label><input id="f_org" value="${esc(o.organizer || '')}" placeholder="Напр. Петро (можна не ви)">
   <label>Куди відправляти (місто, відділення Нової пошти, імʼя та телефон отримувача)</label>
   <textarea id="f_addr" placeholder="Київ, Нова пошта №12, Петро Іванов, +380…">${esc(o.address || '')}</textarea>
-  <label>Номер картки, на яку скидати</label><input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
+  <label>Номер картки того, хто замовляє</label><input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
   <label>Імʼя власника картки (необовʼязково)</label><input id="f_holder" value="${esc(p.holder || '')}">
   <label>Або посилання на банку / оплату (необовʼязково)</label><input id="f_link" value="${esc(p.link || '')}" placeholder="https://send.monobank.ua/jar/…">
   <label>Коментар для учасників (необовʼязково)</label><input id="f_note" value="${esc(p.note || '')}" placeholder="Напр. Скидайте до пʼятниці">
@@ -157,8 +157,7 @@ function renderOrder() {
   ${o.isAdmin ? `<div class="card"><h2>Ви організатор</h2>
     <p class="mute" style="margin-top:0">Надішліть друзям це посилання — більше нічого пояснювати не треба:</p>
     <div class="inline"><input readonly value="${esc(link)}" onclick="this.select()"><button id="cplink">Скопіювати</button></div>
-    <p class="mute">Це посилання зберігається у вашому браузері як «адмінське». Щоб відкрити його з іншого пристрою, скопіюйте:
-      <a href="#" id="cpadmin">адмінське посилання</a>.</p>
+    <p class="mute">Замовляєте не ви? Змініть імʼя, картку й адресу в налаштуваннях нижче — або передайте тому, хто замовляє, <a href="#" id="cpadmin">адмінське посилання</a> (воно дає право відмічати оплати). Себе як учасника додайте так само, як усі, — у кроці 1.</p>
     <div class="row" style="margin-top:8px"><button class="ghost sm" id="edit">⚙ Змінити налаштування (картка, адреса…)</button>
     <button class="ghost sm" id="cpsum">📋 Скопіювати зведення для замовлення</button></div>
     <div id="editbox" class="${editing ? '' : 'hide'}">${settingsForm(o)}<button id="saveset">Зберегти</button><div class="err" id="err2"></div></div></div>` : ''}
