@@ -188,6 +188,8 @@ function renderOrder() {
   <div class="bar ${left <= 0 ? 'full' : ''}"><i style="width:${pct}%"></i></div>
   <div class="mute">${left > 0 ? `Набрано ${packs(c.total)} з ${o.minPacks} — бракує ще <b>${packs(left)}</b> до оптової ціни` : `🎉 Набрано ${packs(c.total)} — мінімум для опту є!`}</div>
 
+  <div class="tip">💡 Усі ціни — <b>оптові</b> (від ${o.minPacks} пачок на всіх). Вони діють, коли разом набереться ${packs(o.minPacks)}.</div>
+
   <div class="card hero">
     ${!name || renaming ? `
       <h2>Як вас звати?</h2>
@@ -223,6 +225,7 @@ function adminBar(o, c, link, isNew) {
       <button class="ghost sm" id="cpsum">📋 Зведення для замовлення</button>
       <button class="ghost sm" id="edit">⚙ Картка, адреса…</button>
       <button class="ghost sm" id="cpadmin">🔑 Посилання організатора</button>
+      <button class="ghost sm" id="refresh">🔄 Оновити ціни з сайту</button>
     </div>
     <div class="mute" style="margin-top:8px;font-size:13px">«Посилання організатора» — щоб відкрити цю панель з іншого пристрою або передати її тому, хто замовлятиме. Друзям його не давайте.</div>
     <div id="editbox" class="${editing ? '' : 'hide'}" style="margin-top:6px">${settingsForm(o)}<button id="saveset" style="margin-top:12px">Зберегти</button><div class="err" id="err2"></div></div>
@@ -232,7 +235,7 @@ function adminBar(o, c, link, isNew) {
 function itemRow(i, editable) {
   return `<div class="item">${i.image ? `<img src="${esc(i.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
     <div class="t">${i.url ? `<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.name)}</a>` : esc(i.name)}
-      <div class="mute">${i.qty} × ${money(i.price)} = ${money(i.qty * i.price)}</div></div>
+      <div class="mute">${i.qty} × ${money(i.price)}${i.retail > i.price ? ` <s>${money(i.retail)}</s>` : ''} = ${money(i.qty * i.price)}</div></div>
     ${editable ? `<div class="qty"><button class="ghost" data-q="${i.id}:${i.qty - 1}" ${i.qty <= 1 ? 'disabled' : ''}>−</button><span>${i.qty}</span><button class="ghost" data-q="${i.id}:${i.qty + 1}">+</button><button class="ghost" data-del="${i.id}" title="Прибрати">✕</button></div>` : ''}</div>`;
 }
 
@@ -241,7 +244,7 @@ function addCoffee(hasItems) {
     <div style="flex:1;min-width:0">
       <label style="margin-top:0">Кава</label><input id="pv_name" value="${esc(preview.name)}" placeholder="Назва кави">
       <div class="row">
-        <div><label>Ціна за пачку, ₴</label><input id="pv_price" type="number" min="0" step="any" value="${preview.price || ''}" placeholder="0"></div>
+        <div><label>Оптова ціна за пачку, ₴${preview.retail > preview.price ? ` <span class="mute">(роздріб ${money(preview.retail)})</span>` : ''}</label><input id="pv_price" type="number" min="0" step="any" value="${preview.price || ''}" placeholder="0"></div>
         <div><label>Скільки пачок</label><div class="qty"><button class="ghost" id="qm">−</button><span id="pv_qty">${preview.qty}</span><button class="ghost" id="qp">+</button></div></div>
       </div>
       ${preview.warning ? `<div class="tip">⚠️ ${esc(preview.warning)}</div>` : ''}
@@ -291,7 +294,7 @@ function bind() {
     $('#qm').onclick = () => set(-1); $('#qp').onclick = () => set(1);
     $('#cancel').onclick = () => { preview = null; renderOrder(); };
     $('#add').onclick = async () => {
-      try { order = await api('POST', `/orders/${o.id}/items`, { person: myName(), url: preview.url, image: preview.image, name: $('#pv_name').value, price: $('#pv_price').value, qty: preview.qty }); preview = null; renderOrder(); }
+      try { order = await api('POST', `/orders/${o.id}/items`, { person: myName(), retail: preview.retail, url: preview.url, image: preview.image, name: $('#pv_name').value, price: $('#pv_price').value, qty: preview.qty }); preview = null; renderOrder(); }
       catch (er) { $('#err3').textContent = er.message; }
     };
     if (!preview.price) $('#pv_price').focus();
@@ -304,6 +307,7 @@ function bind() {
     const link = location.origin + '/o/' + o.id;
     $('#cplink').onclick = e => { copy(link, e.target); ls.set('mh_new_' + o.id, ''); };
     $('#cpadmin').onclick = e => copy(`${link}#key=${adminKey}`, e.target);
+    $('#refresh').onclick = async e => { e.target.disabled = true; e.target.textContent = 'Оновлюю…'; try { const r = await api('POST', `/orders/${o.id}/refresh`); delete r.updated; order = r; renderOrder(); } catch (er) { alert(er.message); e.target.disabled = false; } };
     $('#cpsum').onclick = e => copy(summaryText(o, calc(o)), e.target);
     $('#edit').onclick = () => { editing = !editing; $('#editbox').classList.toggle('hide', !editing); };
     $('#saveset').onclick = async () => { try { order = await api('PUT', '/orders/' + o.id, readSettings()); editing = false; renderOrder(); } catch (er) { $('#err2').textContent = er.message; } };
