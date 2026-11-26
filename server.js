@@ -38,7 +38,7 @@ function publicOrder(o, token, isAdmin) {
     id: o.id, title: o.title, organizer: o.organizer, address: o.address,
     payment: o.payment, minPacks: o.minPacks, shipping: o.shipping, currency: o.currency,
     paid: o.paid, isAdmin,
-    items: o.items.map(i => ({ id: i.id, person: i.person, url: i.url, name: i.name, price: i.price, qty: i.qty, image: i.image, mine: !!token && i.token === token })),
+    items: o.items.map(i => ({ id: i.id, person: i.person, url: i.url, name: i.name, price: i.price, retail: i.retail || 0, qty: i.qty, image: i.image, mine: !!token && i.token === token })),
   };
 }
 
@@ -100,7 +100,7 @@ async function handle(req, res) {
       catch (e) { return send(res, 200, { name: '', price: 0, image: '', url: u.href, warning: 'Не вдалося автоматично прочитати сторінку. Впишіть назву та ціну вручну.' }); }
     }
 
-    const m = p.match(/^\/api\/orders\/([\w-]+)(?:\/(items|paid)(?:\/([\w-]+))?)?$/);
+    const m = p.match(/^\/api\/orders\/([\w-]+)(?:\/(items|paid|refresh)(?:\/([\w-]+))?)?$/);
     if (!m) return send(res, 404, { error: 'not found' });
     const o = db.orders[m[1]];
     if (!o) return send(res, 404, { error: 'Замовлення не знайдено. Перевірте посилання.' });
@@ -125,7 +125,7 @@ async function handle(req, res) {
         if (!(price > 0)) return send(res, 400, { error: 'Вкажіть ціну за пачку.' });
         if (!(qty >= 1 && qty <= 100)) return send(res, 400, { error: 'Кількість має бути від 1 до 100.' });
         if (!token) return send(res, 400, { error: 'no token' });
-        o.items.push({ id: rid(5), token, person, url: clip(b.url, 500), name, price, qty, image: clip(b.image, 500) });
+        o.items.push({ id: rid(5), token, person, url: clip(b.url, 500), name, price, retail: Math.max(0, num(b.retail)), qty, image: clip(b.image, 500) });
         save();
         return send(res, 200, publicOrder(o, token, isAdmin));
       }
@@ -138,6 +138,20 @@ async function handle(req, res) {
         if (!(q >= 1 && q <= 100)) return send(res, 400, { error: 'Кількість має бути від 1 до 100.' });
         it.qty = q; save(); return send(res, 200, publicOrder(o, token, isAdmin));
       }
+    }
+
+    if (m[2] === 'refresh' && req.method === 'POST') {
+      if (!isAdmin) return send(res, 403, { error: 'Лише організатор оновлює ціни.' });
+      const urls = [...new Set(o.items.map(i => i.url).filter(Boolean))];
+      let updated = 0;
+      for (const u of urls) {
+        try {
+          const pr = await parseProduct(u);
+          if (pr.price > 0) for (const i of o.items) if (i.url === u) { if (i.price !== pr.price) updated++; i.price = pr.price; i.retail = pr.retail || 0; }
+        } catch { /* лишаємо стару ціну */ }
+      }
+      save();
+      return send(res, 200, { ...publicOrder(o, token, true), updated });
     }
 
     if (m[2] === 'paid' && req.method === 'POST') {
