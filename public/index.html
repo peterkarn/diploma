@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кава на всіх — складчина</title>
+<style>
+:root{--bg:#f6f1ea;--card:#fff;--ink:#2a1f17;--mute:#7a6a5c;--accent:#b5541b;--accent2:#8f4012;--ok:#2e7d4f;--line:#e6dccf;--warn:#fff4d6}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1612;--card:#2a211b;--ink:#f3e9de;--mute:#b3a291;--accent:#e0813f;--accent2:#f09a5c;--ok:#5cc08a;--line:#43372d;--warn:#463a1c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:26px;margin:8px 0 4px}h2{font-size:18px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.mute{color:var(--mute);font-size:14px}
+label{display:block;font-size:14px;font-weight:600;margin:10px 0 4px}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--bg);color:var(--ink)}
+textarea{resize:vertical;min-height:60px}
+button,.btn{display:inline-block;border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none}
+button:hover,.btn:hover{background:var(--accent2)}
+button.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+button.sm{padding:6px 10px;font-size:13px}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1 1 140px}.row>button{flex:0 0 auto}
+.bar{height:16px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.bar.full>i{background:var(--ok)}
+.big{font-size:22px;font-weight:700}
+.steps{counter-reset:s;padding:0;list-style:none;margin:0}
+.step{display:flex;gap:10px;align-items:center;font-weight:700;margin-bottom:10px}
+.step b{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:14px;flex:none}
+.warn{background:var(--warn);padding:10px 12px;border-radius:10px;font-size:14px;margin-top:10px}
+.err{color:#c0392b;font-size:14px;margin-top:8px;min-height:1em}
+.prev{display:flex;gap:12px;align-items:center;margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:12px}
+.prev img,.item img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex:none;background:var(--line)}
+.qty{display:flex;align-items:center;gap:8px}.qty button{width:36px;padding:8px 0}.qty span{min-width:28px;text-align:center;font-weight:700}
+.person{border-top:1px solid var(--line);padding:12px 0}.person:first-child{border:0}
+.ph{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.pn{font-weight:700;font-size:17px}.pt{font-weight:700;font-size:18px;color:var(--accent)}
+.item{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:14px}.item .t{flex:1;min-width:0}
+.item a{color:var(--ink)}a{color:var(--accent)}
+.badge{font-size:12px;padding:3px 8px;border-radius:99px;background:var(--line)}.badge.ok{background:var(--ok);color:#fff}
+.pay{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.mono{font:700 20px ui-monospace,Menlo,monospace;letter-spacing:.5px}
+.me{background:var(--warn);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.hide{display:none!important}
+.inline{display:flex;gap:8px;align-items:center}.inline input{flex:1}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ls = { get(k){try{return localStorage.getItem(k)||''}catch{return ''}}, set(k,v){try{localStorage.setItem(k,v)}catch{}} };
+let token = ls.get('mh_token'); if (!token) { token = crypto.randomUUID().replace(/-/g,''); ls.set('mh_token', token); }
+const app = $('#app');
+const m = location.pathname.match(/^\/o\/([\w-]+)/);
+const orderId = m && m[1];
+const hashKey = new URLSearchParams(location.hash.slice(1)).get('key');
+if (orderId && hashKey) ls.set('mh_key_' + orderId, hashKey);
+const adminKey = orderId ? ls.get('mh_key_' + orderId) : '';
+
+async function api(method, path, body) {
+  const r = await fetch('/api' + path, { method, headers: { 'content-type': 'application/json', 'x-token': token, 'x-admin-key': adminKey }, body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Помилка ' + r.status);
+  return j;
+}
+const money = (n, c) => (Math.round(n * 100) / 100).toLocaleString('uk-UA', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' ' + c;
+const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20) ? b : c); };
+const packs = n => n + ' ' + plural(n, 'пачка', 'пачки', 'пачок');
+async function copy(text, btn) {
+  try { await navigator.clipboard.writeText(text); } catch { const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
+  if (btn) { const o = btn.textContent; btn.textContent = 'Скопійовано ✓'; setTimeout(() => btn.textContent = o, 1500); }
+}
+
+/* ---------- Форма налаштувань (створення / редагування) ---------- */
+function settingsForm(o = {}) {
+  const p = o.payment || {};
+  return `
+  <label>Назва замовлення</label><input id="f_title" value="${esc(o.title || 'Кава від MadHeads')}">
+  <label>Ваше імʼя (ви замовляєте і збираєте гроші)</label><input id="f_org" value="${esc(o.organizer || '')}" placeholder="Напр. Петро">
+  <label>Куди відправляти (місто, відділення Нової пошти, імʼя та телефон отримувача)</label>
+  <textarea id="f_addr" placeholder="Київ, Нова пошта №12, Петро Іванов, +380…">${esc(o.address || '')}</textarea>
+  <label>Номер картки, на яку скидати</label><input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
+  <label>Імʼя власника картки (необовʼязково)</label><input id="f_holder" value="${esc(p.holder || '')}">
+  <label>Або посилання на банку / оплату (необовʼязково)</label><input id="f_link" value="${esc(p.link || '')}" placeholder="https://send.monobank.ua/jar/…">
+  <label>Коментар для учасників (необовʼязково)</label><input id="f_note" value="${esc(p.note || '')}" placeholder="Напр. Скидайте до пʼятниці">
+  <div class="row">
+    <div><label>Мінімум пачок для опту</label><input id="f_min" type="number" min="1" value="${o.minPacks || 16}"></div>
+    <div><label>Доставка на всіх, разом (0, якщо безкоштовна)</label><input id="f_ship" type="number" min="0" step="any" value="${o.shipping || 0}"></div>
+  </div>`;
+}
+function readSettings() {
+  return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
+    payment: { card: $('#f_card').value, holder: $('#f_holder').value, link: $('#f_link').value, note: $('#f_note').value } };
+}
+
+/* ---------- Сторінка створення ---------- */
+function renderHome() {
+  document.title = 'Кава на всіх — складчина';
+  app.innerHTML = `
+  <h1>☕ Кава на всіх</h1>
+  <p class="mute">Замовляєте каву MadHeads разом із друзями? Створіть спільне замовлення — друзі самі вставлять посилання на каву, а ви побачите, хто скільки пачок бере і скільки має вам скинути.</p>
+  <div class="card"><h2>Створіть замовлення (1 хвилина)</h2>${settingsForm()}
+    <p class="mute">Це бачитимуть усі учасники: так їм не доведеться питати у вас, куди і скільки скидати.</p>
+    <button id="create">Створити і отримати посилання для друзів</button><div class="err" id="err"></div></div>`;
+  $('#create').onclick = async e => {
+    e.target.disabled = true;
+    try {
+      const s = readSettings();
+      if (!s.organizer.trim()) throw new Error('Вкажіть своє імʼя.');
+      const r = await api('POST', '/orders', s);
+      ls.set('mh_key_' + r.id, r.adminKey);
+      ls.set('mh_name', s.organizer.trim());
+      location.href = `/o/${r.id}#key=${r.adminKey}`;
+    } catch (er) { $('#err').textContent = er.message; e.target.disabled = false; }
+  };
+}
+
+/* ---------- Сторінка замовлення ---------- */
+let order = null, preview = null, editing = false, busy = false;
+
+function calc(o) {
+  const by = {};
+  for (const i of o.items) { (by[i.person] ||= { name: i.person, items: [], packs: 0, sum: 0 }); const p = by[i.person]; p.items.push(i); p.packs += i.qty; p.sum += i.qty * i.price; }
+  const list = Object.values(by);
+  const total = list.reduce((s, p) => s + p.packs, 0);
+  const sum = list.reduce((s, p) => s + p.sum, 0);
+  list.forEach(p => { p.ship = total ? o.shipping * p.packs / total : 0; p.pay = p.sum + p.ship; });
+  return { list, total, sum };
+}
+
+function summaryText(o, c) {
+  const agg = {};
+  o.items.forEach(i => { const k = i.name; (agg[k] ||= { qty: 0, url: i.url }).qty += i.qty; });
+  let t = `${o.title}\nУсього: ${packs(c.total)}, ${money(c.sum + o.shipping, o.currency)}\n\nЩо замовляти:\n`;
+  t += Object.entries(agg).map(([n, a]) => `• ${n} — ${a.qty} шт.${a.url ? '\n  ' + a.url : ''}`).join('\n');
+  t += '\n\nХто скільки скидає:\n' + c.list.map(p => `• ${p.name}: ${packs(p.packs)} → ${money(Math.ceil(p.pay), o.currency)}${o.paid[p.name] ? ' ✓' : ''}`).join('\n');
+  return t;
+}
+
+function renderOrder() {
+  const o = order, c = calc(o), cur = o.currency, myName = ls.get('mh_name');
+  document.title = o.title;
+  const pct = Math.min(100, Math.round(c.total / o.minPacks * 100));
+  const left = o.minPacks - c.total;
+  const pay = o.payment, link = location.origin + '/o/' + o.id;
+  const mine = c.list.find(p => p.name.toLowerCase() === myName.toLowerCase());
+  const hasPay = pay.card || pay.link;
+
+  app.innerHTML = `
+  <h1>☕ ${esc(o.title)}</h1>
+  <div class="mute">Замовляє: <b>${esc(o.organizer)}</b></div>
+
+  ${o.isAdmin ? `<div class="card"><h2>Ви організатор</h2>
+    <p class="mute" style="margin-top:0">Надішліть друзям це посилання — більше нічого пояснювати не треба:</p>
+    <div class="inline"><input readonly value="${esc(link)}" onclick="this.select()"><button id="cplink">Скопіювати</button></div>
+    <p class="mute">Це посилання зберігається у вашому браузері як «адмінське». Щоб відкрити його з іншого пристрою, скопіюйте:
+      <a href="#" id="cpadmin">адмінське посилання</a>.</p>
+    <div class="row" style="margin-top:8px"><button class="ghost sm" id="edit">⚙ Змінити налаштування (картка, адреса…)</button>
+    <button class="ghost sm" id="cpsum">📋 Скопіювати зведення для замовлення</button></div>
+    <div id="editbox" class="${editing ? '' : 'hide'}">${settingsForm(o)}<button id="saveset">Зберегти</button><div class="err" id="err2"></div></div></div>` : ''}
+
+  <div class="card">
+    <div class="big">${packs(c.total)} з ${o.minPacks}</div>
+    <div class="bar ${left <= 0 ? 'full' : ''}"><i style="width:${pct}%"></i></div>
+    <div>${left > 0 ? `Ще потрібно <b>${packs(left)}</b>, щоб набрати оптове замовлення.` : '🎉 Мінімум набрано — організатор може оформлювати замовлення.'}</div>
+    <div class="mute">Загалом: ${money(c.sum + o.shipping, cur)}${o.shipping ? ` (з доставкою ${money(o.shipping, cur)})` : ''}</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><b>1</b> Оберіть каву на сайті MadHeads і вставте посилання</div>
+    <p class="mute" style="margin-top:-4px">Відкрийте сторінку потрібної кави на MadHeads, скопіюйте адресу з рядка браузера й вставте нижче.</p>
+    <label>Ваше імʼя</label><input id="name" value="${esc(myName)}" placeholder="Як вас підписати" autocomplete="given-name">
+    <label>Посилання на каву</label>
+    <div class="inline"><input id="url" placeholder="Вставте посилання сюди" inputmode="url"><button id="fetch">Підтягнути</button></div>
+    <div class="err" id="err"></div>
+    <div id="prevbox">${preview ? previewHtml(preview, cur) : ''}</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><b>2</b> Хто що бере і скільки скинути</div>
+    ${mine ? `<div class="me">Вам скинути: <span class="big">${money(Math.ceil(mine.pay), cur)}</span>${o.paid[mine.name] ? ' <span class="badge ok">оплачено ✓</span>' : ''}<div class="mute">${packs(mine.packs)}${mine.ship ? `, у т.ч. доставка ${money(mine.ship, cur)}` : ''}</div></div>` : ''}
+    ${c.list.length ? c.list.map(p => personHtml(p, o)).join('') : '<p class="mute">Поки ніхто нічого не додав. Будьте першим!</p>'}
+  </div>
+
+  <div class="card">
+    <div class="step"><b>3</b> Куди скидати гроші</div>
+    ${hasPay ? `
+      ${pay.card ? `<div class="pay"><span class="mono">${esc(pay.card)}</span><button class="sm" data-copy="${esc(pay.card.replace(/\s/g, ''))}">Скопіювати номер</button></div>` : ''}
+      ${pay.holder ? `<div class="mute">Отримувач: ${esc(pay.holder)}</div>` : ''}
+      ${pay.link ? `<div class="pay"><a class="btn" href="${esc(pay.link)}" target="_blank" rel="noopener">Відкрити банку / оплату →</a></div>` : ''}
+      ${pay.note ? `<div class="mute">${esc(pay.note)}</div>` : ''}`
+      : '<p class="mute">Організатор ще не вказав реквізити.</p>'}
+    ${o.address ? `<h2 style="margin-top:16px">Доставка</h2><div>${esc(o.address).replace(/\n/g, '<br>')}</div>` : ''}
+  </div>`;
+
+  // події
+  $('#fetch').onclick = doPreview;
+  $('#url').onkeydown = e => { if (e.key === 'Enter') doPreview(); };
+  $('#name').oninput = e => ls.set('mh_name', e.target.value.trim());
+  bindPreview();
+  app.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copy(b.dataset.copy, b));
+  app.querySelectorAll('[data-del]').forEach(b => b.onclick = () => act(() => api('DELETE', `/orders/${o.id}/items/${b.dataset.del}`)));
+  app.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { const [id, q] = b.dataset.q.split(':'); if (+q >= 1) act(() => api('PATCH', `/orders/${o.id}/items/${id}`, { qty: +q })); });
+  app.querySelectorAll('[data-paid]').forEach(b => b.onclick = () => act(() => api('POST', `/orders/${o.id}/paid`, { person: b.dataset.paid, paid: b.dataset.v === '1' })));
+  if (o.isAdmin) {
+    $('#cplink').onclick = e => copy(link, e.target);
+    $('#cpadmin').onclick = e => { e.preventDefault(); copy(`${link}#key=${adminKey}`, e.target); };
+    $('#cpsum').onclick = e => copy(summaryText(o, c), e.target);
+    $('#edit').onclick = () => { editing = !editing; $('#editbox').classList.toggle('hide', !editing); };
+    $('#saveset').onclick = async () => { try { order = await api('PUT', '/orders/' + o.id, readSettings()); editing = false; renderOrder(); } catch (er) { $('#err2').textContent = er.message; } };
+  }
+}
+
+function personHtml(p, o) {
+  const cur = o.currency;
+  return `<div class="person"><div class="ph"><div><span class="pn">${esc(p.name)}</span> <span class="mute">${packs(p.packs)}</span>
+    ${o.paid[p.name] ? '<span class="badge ok">оплачено ✓</span>' : '<span class="badge">чекаємо оплату</span>'}</div>
+    <div class="pt">${money(Math.ceil(p.pay), cur)}</div></div>
+    ${p.items.map(i => `<div class="item">${i.image ? `<img src="${esc(i.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+      <div class="t">${i.url ? `<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.name)}</a>` : esc(i.name)}<div class="mute">${i.qty} × ${money(i.price, cur)} = ${money(i.qty * i.price, cur)}</div></div>
+      ${(i.mine || o.isAdmin) ? `<div class="qty"><button class="ghost sm" data-q="${i.id}:${i.qty - 1}">−</button><span>${i.qty}</span><button class="ghost sm" data-q="${i.id}:${i.qty + 1}">+</button>
+      <button class="ghost sm" data-del="${i.id}" title="Видалити">✕</button></div>` : ''}</div>`).join('')}
+    ${p.ship ? `<div class="mute" style="margin-top:6px">Доставка на ${esc(p.name)}: ${money(p.ship, cur)}</div>` : ''}
+    ${o.isAdmin ? `<div style="margin-top:8px"><button class="ghost sm" data-paid="${esc(p.name)}" data-v="${o.paid[p.name] ? 0 : 1}">${o.paid[p.name] ? 'Зняти відмітку оплати' : '✓ Відмітити як оплачено'}</button></div>` : ''}</div>`;
+}
+
+function previewHtml(pv, cur) {
+  return `<div class="prev">${pv.image ? `<img src="${esc(pv.image)}" alt="" onerror="this.remove()">` : ''}
+    <div style="flex:1;min-width:0"><label style="margin-top:0">Назва</label><input id="pv_name" value="${esc(pv.name)}" placeholder="Назва кави">
+    <div class="row"><div><label>Ціна за пачку, ${esc(cur)}</label><input id="pv_price" type="number" min="0" step="any" value="${pv.price || ''}" placeholder="0"></div>
+    <div><label>Скільки пачок</label><div class="qty"><button class="ghost sm" id="qm">−</button><span id="pv_qty">${pv.qty || 1}</span><button class="ghost sm" id="qp">+</button></div></div></div>
+    ${pv.warning ? `<div class="warn">${esc(pv.warning)}</div>` : ''}
+    <div style="margin-top:12px"><button id="add">Додати до замовлення</button></div><div class="err" id="err3"></div></div></div>`;
+}
+function bindPreview() {
+  if (!preview) return;
+  const set = d => { preview.qty = Math.min(100, Math.max(1, (preview.qty || 1) + d)); $('#pv_qty').textContent = preview.qty; };
+  $('#qm').onclick = () => set(-1); $('#qp').onclick = () => set(1);
+  $('#add').onclick = async e => {
+    const person = $('#name').value.trim();
+    try {
+      if (!person) { $('#name').focus(); throw new Error('Спочатку впишіть своє імʼя.'); }
+      ls.set('mh_name', person);
+      order = await api('POST', `/orders/${order.id}/items`, { person, url: preview.url, image: preview.image, name: $('#pv_name').value, price: $('#pv_price').value, qty: preview.qty || 1 });
+      preview = null; renderOrder();
+    } catch (er) { $('#err3').textContent = er.message; }
+  };
+}
+
+async function doPreview() {
+  const url = $('#url').value.trim(), b = $('#fetch');
+  $('#err').textContent = '';
+  if (!url) { $('#err').textContent = 'Вставте посилання на каву.'; return; }
+  b.disabled = true; b.textContent = 'Читаю…';
+  try { preview = { ...(await api('POST', '/preview', { url })), qty: 1 }; const keepName = $('#name').value; renderOrder(); $('#name').value = keepName; $('#url').value = url; }
+  catch (er) { $('#err').textContent = er.message; b.disabled = false; b.textContent = 'Підтягнути'; }
+}
+
+async function act(fn) { if (busy) return; busy = true; try { order = await fn(); renderOrder(); } catch (e) { alert(e.message); } busy = false; }
+
+async function load() {
+  try { order = await api('GET', '/orders/' + orderId); renderOrder(); }
+  catch (e) { app.innerHTML = `<div class="card"><h2>Не вдалося відкрити замовлення</h2><p>${esc(e.message)}</p><a class="btn" href="/">Створити нове</a></div>`; return; }
+  // оновлення «наживо», не заважаючи введенню
+  setInterval(async () => {
+    const a = document.activeElement;
+    if (busy || editing || preview || (a && /INPUT|TEXTAREA/.test(a.tagName) && a.value)) return;
+    try { const n = await api('GET', '/orders/' + orderId); if (JSON.stringify(n) !== JSON.stringify(order)) { order = n; renderOrder(); } } catch {}
+  }, 5000);
+}
+
+orderId ? load() : renderHome();
+</script>
+</body>
+</html>
