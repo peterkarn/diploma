@@ -18,6 +18,17 @@ fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 let db = { orders: {} };
 try { db = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8')); } catch { /* перший запуск */ }
 
+// Нова пошта: публічні довідники працюють і без ключа; NP_API_KEY — за бажанням.
+async function novaPoshta(calledMethod, methodProperties) {
+  const r = await fetch('https://api.novaposhta.ua/v2.0/json/', {
+    method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(8000),
+    body: JSON.stringify({ apiKey: process.env.NP_API_KEY || '', modelName: 'AddressGeneral', calledMethod, methodProperties }),
+  });
+  const j = await r.json();
+  if (!j.success) throw new Error((j.errors || []).join('; ') || 'Нова пошта не відповідає');
+  return j.data || [];
+}
+
 let saving = false, dirty = false;
 function save() {
   if (saving) { dirty = true; return; }
@@ -35,7 +46,7 @@ const num = (v, d = 0) => { const x = Number(String(v).replace(',', '.')); retur
 
 function publicOrder(o, token, isAdmin) {
   return {
-    id: o.id, title: o.title, organizer: o.organizer, address: o.address,
+    id: o.id, title: o.title, organizer: o.organizer, address: o.address, np: o.np || null,
     payment: o.payment, minPacks: o.minPacks, shipping: o.shipping, currency: o.currency,
     paid: o.paid, isAdmin,
     items: o.items.map(i => ({ id: i.id, person: i.person, url: i.url, name: i.name, price: i.price, retail: i.retail || 0, qty: i.qty, image: i.image, mine: !!token && i.token === token })),
@@ -61,6 +72,9 @@ function applySettings(o, b) {
   o.title = clip(b.title, 80) || 'Спільне замовлення кави';
   o.organizer = clip(b.organizer, 60);
   o.address = clip(b.address, 400);
+  const np = b.np || {};
+  o.np = np.warehouseRef ? { city: clip(np.city, 120), cityRef: clip(np.cityRef, 60), warehouse: clip(np.warehouse, 200), warehouseRef: clip(np.warehouseRef, 60),
+    recipient: clip(np.recipient, 80), phone: clip(np.phone, 20) } : null;
   o.minPacks = Math.max(1, Math.round(num(b.minPacks, 16)));
   o.shipping = Math.max(0, num(b.shipping, 0));
   o.currency = clip(b.currency, 6) || '₴';
@@ -87,6 +101,21 @@ async function handle(req, res) {
       applySettings(o, b);
       db.orders[o.id] = o; save();
       return send(res, 200, { id: o.id, adminKey: o.adminKey });
+    }
+
+    if (req.method === 'GET' && p === '/api/np/cities') {
+      const q = clip(url.searchParams.get('q'), 50);
+      if (q.length < 2) return send(res, 200, []);
+      const d = await novaPoshta('searchSettlements', { CityName: q, Limit: '15', Page: '1' });
+      const list = ((d[0] && d[0].Addresses) || []).filter(a => a.Warehouses > 0)
+        .map(a => ({ ref: a.DeliveryCity, name: a.Present }));
+      return send(res, 200, list);
+    }
+    if (req.method === 'GET' && p === '/api/np/warehouses') {
+      const city = clip(url.searchParams.get('city'), 60), q = clip(url.searchParams.get('q'), 50);
+      if (!/^[\w-]{36}$/.test(city)) return send(res, 400, { error: 'Спочатку оберіть місто.' });
+      const d = await novaPoshta('getWarehouses', { CityRef: city, FindByString: q, Limit: '30', Page: '1' });
+      return send(res, 200, d.map(w => ({ ref: w.Ref, name: w.Description })));
     }
 
     if (req.method === 'POST' && p === '/api/preview') {
@@ -163,7 +192,7 @@ async function handle(req, res) {
     }
     send(res, 405, { error: 'method not allowed' });
   } catch (e) {
-    send(res, 400, { error: 'Некоректний запит' });
+    send(res, 400, { error: p.startsWith('/api/np/') ? 'Нова пошта зараз не відповідає, спробуйте ще раз.' : 'Некоректний запит' });
   }
 }
 
