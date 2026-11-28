@@ -44,11 +44,22 @@ const rid = n => crypto.randomBytes(n).toString('base64url');
 const clip = (v, n) => String(v ?? '').trim().slice(0, n);
 const num = (v, d = 0) => { const x = Number(String(v).replace(',', '.')); return Number.isFinite(x) ? x : d; };
 
+// Адреси бачить лише організатор (там телефони) і сам учасник — свою.
+function publicDeliveries(o, token, isAdmin) {
+  const out = {};
+  for (const [person, d] of Object.entries(o.deliveries || {})) {
+    const mine = !!token && d.token === token;
+    if (isAdmin || mine) out[person] = { city: d.city, warehouse: d.warehouse, recipient: d.recipient, phone: d.phone, mine };
+  }
+  return out;
+}
+
 function publicOrder(o, token, isAdmin) {
   return {
-    id: o.id, title: o.title, organizer: o.organizer, address: o.address, np: o.np || null,
+    id: o.id, title: o.title, organizer: o.organizer, address: o.address,
     payment: o.payment, minPacks: o.minPacks, shipping: o.shipping, currency: o.currency,
     paid: o.paid, isAdmin,
+    deliveries: publicDeliveries(o, token, isAdmin),
     items: o.items.map(i => ({ id: i.id, person: i.person, url: i.url, name: i.name, price: i.price, retail: i.retail || 0, qty: i.qty, image: i.image, mine: !!token && i.token === token })),
   };
 }
@@ -72,9 +83,6 @@ function applySettings(o, b) {
   o.title = clip(b.title, 80) || 'Спільне замовлення кави';
   o.organizer = clip(b.organizer, 60);
   o.address = clip(b.address, 400);
-  const np = b.np || {};
-  o.np = np.warehouseRef ? { city: clip(np.city, 120), cityRef: clip(np.cityRef, 60), warehouse: clip(np.warehouse, 200), warehouseRef: clip(np.warehouseRef, 60),
-    recipient: clip(np.recipient, 80), phone: clip(np.phone, 20) } : null;
   o.minPacks = Math.max(1, Math.round(num(b.minPacks, 16)));
   o.shipping = Math.max(0, num(b.shipping, 0));
   o.currency = clip(b.currency, 6) || '₴';
@@ -129,7 +137,7 @@ async function handle(req, res) {
       catch (e) { return send(res, 200, { name: '', price: 0, image: '', url: u.href, warning: 'Не вдалося автоматично прочитати сторінку. Впишіть назву та ціну вручну.' }); }
     }
 
-    const m = p.match(/^\/api\/orders\/([\w-]+)(?:\/(items|paid|refresh)(?:\/([\w-]+))?)?$/);
+    const m = p.match(/^\/api\/orders\/([\w-]+)(?:\/(items|paid|refresh|delivery)(?:\/([\w-]+))?)?$/);
     if (!m) return send(res, 404, { error: 'not found' });
     const o = db.orders[m[1]];
     if (!o) return send(res, 404, { error: 'Замовлення не знайдено. Перевірте посилання.' });
@@ -181,6 +189,23 @@ async function handle(req, res) {
       }
       save();
       return send(res, 200, { ...publicOrder(o, token, true), updated });
+    }
+
+    if (m[2] === 'delivery' && req.method === 'POST') {
+      const b = await readBody(req);
+      const person = clip(b.person, 40), city = clip(b.city, 120), warehouse = clip(b.warehouse, 200);
+      if (!token) return send(res, 400, { error: 'no token' });
+      if (!person) return send(res, 400, { error: 'Вкажіть своє імʼя.' });
+      if (!city || !warehouse || !clip(b.warehouseRef, 60)) return send(res, 400, { error: 'Оберіть місто й відділення зі списку.' });
+      const recipient = clip(b.recipient, 80), phone = clip(b.phone, 20);
+      if (!recipient) return send(res, 400, { error: 'Вкажіть, на кого оформити отримання (ПІБ).' });
+      if (phone.replace(/\D/g, '').length < 10) return send(res, 400, { error: 'Вкажіть телефон отримувача (10–12 цифр).' });
+      o.deliveries ||= {};
+      const old = o.deliveries[person];
+      if (old && old.token !== token && !isAdmin) return send(res, 403, { error: 'Це імʼя вже зайняте іншим учасником.' });
+      o.deliveries[person] = { token: old ? old.token : token, city, cityRef: clip(b.cityRef, 60), warehouse, warehouseRef: clip(b.warehouseRef, 60), recipient, phone };
+      save();
+      return send(res, 200, publicOrder(o, token, isAdmin));
     }
 
     if (m[2] === 'paid' && req.method === 'POST') {

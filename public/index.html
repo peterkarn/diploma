@@ -105,10 +105,9 @@ function settingsForm(o = {}) {
   <input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
   <label>або посилання на банку <span class="mute">(необовʼязково)</span></label>
   <input id="f_link" value="${esc(p.link || '')}" placeholder="https://send.monobank.ua/jar/…">
-  ${npForm(o.np)}
-  <details ${o.id ? 'open' : ''}><summary>Додатково: коментар до доставки, мінімум пачок, назва</summary>
-    <label>Інша адреса або коментар до доставки</label>
-    <textarea id="f_addr" placeholder="Напр. забираю з відділення у суботу">${esc(o.address || '')}</textarea>
+  <details ${o.id ? 'open' : ''}><summary>Додатково: коментар, мінімум пачок, назва</summary>
+    <label>Коментар до доставки (необовʼязково)</label>
+    <textarea id="f_addr" placeholder="Напр. роздам каву в суботу">${esc(o.address || '')}</textarea>
     <label>Отримувач на картці <span class="mute">(щоб люди бачили, що переказують правильно)</span></label>
     <input id="f_holder" value="${esc(p.holder || '')}" placeholder="Петро І.">
     <label>Коментар для всіх</label>
@@ -122,21 +121,25 @@ function settingsForm(o = {}) {
 }
 /* ---------- Нова пошта: місто -> відділення ---------- */
 let npSel = {};
-function npForm(np) {
-  npSel = { ...(np || {}) };
+function npForm(d, name) {
+  npSel = d && d.warehouse ? { city: d.city, warehouse: d.warehouse, cityRef: d.cityRef, warehouseRef: d.warehouseRef } : {};
+  d = d || {};
   return `<div class="np">
-    <label>📦 Куди MadHeads відправить посилку (Нова пошта)</label>
-    <div class="ac"><input id="np_city" value="${esc(npSel.city || '')}" placeholder="Почніть вводити місто" autocomplete="off"><div class="acl" id="np_city_l"></div></div>
-    <div class="ac" style="margin-top:8px"><input id="np_wh" value="${esc(npSel.warehouse || '')}" placeholder="Номер відділення / поштомату або вулиця" autocomplete="off" ${npSel.cityRef ? '' : 'disabled'}><div class="acl" id="np_wh_l"></div></div>
+    <label>Місто</label>
+    <div class="ac"><input id="np_city" value="${esc(d.city || '')}" placeholder="Почніть вводити місто" autocomplete="off"><div class="acl" id="np_city_l"></div></div>
+    <label>Відділення або поштомат Нової пошти</label>
+    <div class="ac"><input id="np_wh" value="${esc(d.warehouse || '')}" placeholder="Номер відділення або вулиця" autocomplete="off" disabled><div class="acl" id="np_wh_l"></div></div>
     <div class="row">
-      <div><label>Отримувач (ПІБ)</label><input id="np_rec" value="${esc(npSel.recipient || '')}" placeholder="Петренко Петро"></div>
-      <div><label>Телефон отримувача</label><input id="np_phone" type="tel" value="${esc(npSel.phone || '')}" placeholder="+380…"></div>
+      <div><label>Отримувач (ПІБ)</label><input id="np_rec" value="${esc(d.recipient || name || '')}" placeholder="Петренко Петро"></div>
+      <div><label>Телефон отримувача</label><input id="np_phone" type="tel" value="${esc(d.phone || '')}" placeholder="+380…"></div>
     </div>
-    <div class="err" id="np_err"></div></div>`;
+    <div class="err" id="np_err"></div>
+    <div class="row" style="margin-top:10px"><button id="np_save">Зберегти адресу</button>${dlvEditing && d.warehouse ? '<button class="ghost" id="np_cancel" style="flex:0 0 auto">Скасувати</button>' : ''}</div></div>`;
 }
 function bindNp() {
   const city = $('#np_city'), wh = $('#np_wh');
   if (!city) return;
+  wh.disabled = !npSel.cityRef;
   let t1, t2;
   const list = (box, items, pick) => {
     box.innerHTML = items.length ? items.map((it, i) => `<button type="button" data-i="${i}">${esc(it.name)}</button>`).join('') : '';
@@ -154,11 +157,34 @@ function bindNp() {
   };
   wh.oninput = () => { delete npSel.warehouseRef; clearTimeout(t2); t2 = setTimeout(loadWh, 300); };
   wh.onfocus = () => { if (npSel.cityRef && !npSel.warehouseRef) loadWh(); };
-  [city, wh].forEach(i => i.onblur = () => setTimeout(() => { $('#np_city_l').innerHTML = ''; $('#np_wh_l').innerHTML = ''; }, 150));
+  [city, wh].forEach(i => i.onblur = () => setTimeout(() => { const x = $('#np_city_l'), y = $('#np_wh_l'); if (x) x.innerHTML = ''; if (y) y.innerHTML = ''; }, 150));
+}
+
+function bindDelivery() {
+  bindNp();
+  if (!$('#np_save')) return;
+  $('#np_cancel') && ($('#np_cancel').onclick = () => { dlvEditing = false; renderOrder(); });
+  $('#np_save').onclick = async e => {
+    e.target.disabled = true;
+    try {
+      if (!npSel.warehouseRef) throw new Error('Оберіть місто й відділення зі списку, що зʼявляється під полем.');
+      order = await api('POST', `/orders/${order.id}/delivery`, { person: myName(), ...npSel, recipient: $('#np_rec').value, phone: $('#np_phone').value });
+      dlvEditing = false; renderOrder();
+    } catch (er) { $('#np_err').textContent = er.message; e.target.disabled = false; }
+  };
+}
+function deliveryBlock(o, name) {
+  const d = (o.deliveries || {})[name];
+  const mine = d && d.mine;
+  if (mine && !dlvEditing) return `<div class="payme" style="background:var(--oksoft)"><div class="top"><b>📦 Куди відправимо вашу каву</b><button class="link sm" id="dlv_edit">змінити</button></div>
+    <div style="margin-top:6px">${esc(d.city)}</div><div>${esc(d.warehouse)}</div><div class="mute">${esc(d.recipient)}, ${esc(d.phone)}</div></div>`;
+  return `<div class="payme"><b>📦 Куди відправити вашу каву?</b>
+    <p class="mute" style="margin:4px 0 0">${esc(o.organizer)} отримає каву й перешле вам Новою поштою. Оберіть відділення, куди зручно забрати — тоді нічого не доведеться уточнювати.</p>
+    ${npForm(mine ? d : null, name)}</div>`;
 }
 
 function readSettings() {
-  return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, np: npSel.warehouseRef ? { ...npSel, recipient: $('#np_rec').value, phone: $('#np_phone').value } : null, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
+  return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
     payment: { card: $('#f_card').value, holder: $('#f_holder').value, link: $('#f_link').value, note: $('#f_note').value } };
 }
 
@@ -182,11 +208,9 @@ function renderHome() {
     <div class="err" id="err"></div>
   </div>
   <p class="mute">Вам надіслали посилання? Просто відкрийте його — тут нічого створювати не треба.</p>`;
-  bindNp();
   $('#create').onclick = async e => {
     e.target.disabled = true;
     try {
-      if ($('#np_city').value.trim() && !npSel.warehouseRef) throw new Error('Оберіть відділення Нової пошти зі списку (або зітріть місто).');
       const s = readSettings();
       if (!s.organizer.trim()) throw new Error('Вкажіть імʼя того, хто замовляє.');
       if (!s.payment.card.trim() && !s.payment.link.trim()) throw new Error('Вкажіть картку або посилання на банку — інакше друзі не знатимуть, куди скидати.');
@@ -199,6 +223,7 @@ function renderHome() {
 }
 
 /* ================= Сторінка замовлення ================= */
+let dlvEditing = false;
 let order = null, preview = null, editing = false, busy = false, renaming = false;
 const myName = () => ls.get('mh_name_' + orderId) || ls.get('mh_name');
 
@@ -216,7 +241,8 @@ function summaryText(o, c) {
   o.items.forEach(i => { (agg[i.name] ||= { qty: 0, url: i.url }).qty += i.qty; });
   return `${o.title}: ${packs(c.total)}, ${money(c.sum + o.shipping)}\n\nЩО ЗАМОВЛЯТИ:\n` +
     Object.entries(agg).map(([n, a]) => `• ${n} — ${a.qty} шт.${a.url ? '\n  ' + a.url : ''}`).join('\n') +
-    '\n\nХТО СКІЛЬКИ СКИДАЄ:\n' + c.list.map(p => `• ${p.name}: ${packs(p.packs)} → ${money(p.pay)}${o.paid[p.name] ? ' ✓ оплачено' : ''}`).join('\n');
+    '\n\nХТО СКІЛЬКИ СКИДАЄ:\n' + c.list.map(p => `• ${p.name}: ${packs(p.packs)} → ${money(p.pay)}${o.paid[p.name] ? ' ✓ оплачено' : ''}`).join('\n') +
+    '\n\nКУДИ ВІДПРАВЛЯТИ КАВУ:\n' + c.list.map(p => { const d = (o.deliveries || {})[p.name]; return `• ${p.name} (${packs(p.packs)}): ` + (d ? `${d.city}, ${d.warehouse}; ${d.recipient}, ${d.phone}` : 'адресу не вказано'); }).join('\n');
 }
 
 function renderOrder() {
@@ -248,21 +274,21 @@ function renderOrder() {
       <div class="top"><h2>${myItems.length ? 'Ваша кава' : 'Що берете, ' + esc(name) + '?'}</h2><button class="link sm" id="rename">Я не ${esc(name)}</button></div>
       ${myItems.length ? `<div>${myItems.map(i => itemRow(i, true)).join('')}</div>` : ''}
       ${addCoffee(myItems.length)}
-      ${me ? payBlock(o, me) : ''}`}
+      ${me ? payBlock(o, me) : ''}
+      ${myItems.length || (o.deliveries || {})[name] ? deliveryBlock(o, name) : ''}`}
   </div>
 
   ${c.list.length ? `<div class="card">
     <h2>Усе замовлення</h2>
     <table>${c.list.map(p => `<tr><td><b>${esc(p.name)}</b> <span class="mute">${packs(p.packs)}</span>
-        <details><summary>що бере</summary>${p.items.map(i => itemRow(i, o.isAdmin && !i.mine)).join('')}${p.ship ? `<div class="mute">+ доставка ${money(p.ship)}</div>` : ''}</details></td>
+        <details><summary>що бере</summary>${p.items.map(i => itemRow(i, o.isAdmin && !i.mine)).join('')}${p.ship ? `<div class="mute">+ доставка ${money(p.ship)}</div>` : ''}</details>
+        ${o.isAdmin ? ((o.deliveries || {})[p.name] ? `<div class="mute" style="margin-top:4px">📦 ${esc(o.deliveries[p.name].city)}, ${esc(o.deliveries[p.name].warehouse)} — ${esc(o.deliveries[p.name].recipient)}, ${esc(o.deliveries[p.name].phone)}</div>` : `<div class="mute" style="margin-top:4px">⚠️ ще не вказав(-ла), куди відправляти</div>`) : ''}</td>
       <td class="r">${money(p.pay)}<br>${o.paid[p.name] ? '<span class="badge ok">оплачено</span>' : '<span class="badge">не оплачено</span>'}
         ${o.isAdmin ? `<br><button class="link sm" data-paid="${esc(p.name)}" data-v="${o.paid[p.name] ? 0 : 1}">${o.paid[p.name] ? 'зняти' : 'отримав ✓'}</button>` : ''}</td></tr>`).join('')}
       <tr><td><b>Разом</b> <span class="mute">${packs(c.total)}</span></td><td class="r">${money(c.sum + o.shipping)}</td></tr>
     </table></div>` : ''}
 
-  ${o.np || o.address ? `<div class="card"><h2>Куди приїде посилка</h2>
-    ${o.np ? `<div>📦 Нова пошта: <b>${esc(o.np.city)}</b></div><div>${esc(o.np.warehouse)}</div>${o.np.recipient ? `<div class="mute">Отримувач: ${esc(o.np.recipient)}${o.np.phone ? ', ' + esc(o.np.phone) : ''}</div>` : ''}` : ''}
-    ${o.address ? `<div style="margin-top:6px">${esc(o.address).replace(/\n/g, '<br>')}</div>` : ''}<p class="mute" style="margin-bottom:0">Звідти ${esc(o.organizer)} роздасть каву.</p></div>` : ''}
+  ${o.address ? `<div class="card"><h2>Коментар до доставки</h2><div>${esc(o.address).replace(/\n/g, '<br>')}</div></div>` : ''}
   ${!o.isAdmin ? `<p class="mute" style="text-align:center">Це ви збираєте замовлення? <a href="/">Створити своє</a></p>` : ''}`;
   bind();
 }
@@ -349,6 +375,8 @@ function bind() {
     };
     if (!preview.price) $('#pv_price').focus();
   }
+  $('#dlv_edit') && ($('#dlv_edit').onclick = () => { dlvEditing = true; renderOrder(); });
+  bindDelivery();
   $$('[data-copy]').forEach(b => b.onclick = () => copy(b.dataset.copy, b));
   $$('[data-del]').forEach(b => b.onclick = () => confirm('Прибрати цю каву?') && act(() => api('DELETE', `/orders/${o.id}/items/${b.dataset.del}`)));
   $$('[data-q]').forEach(b => b.onclick = () => { const [id, q] = b.dataset.q.split(':'); if (+q >= 1) act(() => api('PATCH', `/orders/${o.id}/items/${id}`, { qty: +q })); });
@@ -360,7 +388,6 @@ function bind() {
     $('#refresh').onclick = async e => { e.target.disabled = true; e.target.textContent = 'Оновлюю…'; try { const r = await api('POST', `/orders/${o.id}/refresh`); delete r.updated; order = r; renderOrder(); } catch (er) { alert(er.message); e.target.disabled = false; } };
     $('#cpsum').onclick = e => copy(summaryText(o, calc(o)), e.target);
     $('#edit').onclick = () => { editing = !editing; $('#editbox').classList.toggle('hide', !editing); };
-    bindNp();
     $('#saveset').onclick = async () => { try { order = await api('PUT', '/orders/' + o.id, readSettings()); editing = false; renderOrder(); } catch (er) { $('#err2').textContent = er.message; } };
   }
 }
@@ -382,7 +409,7 @@ async function load() {
   catch (e) { app.innerHTML = `<div class="card"><h2>Замовлення не знайдено</h2><p>${esc(e.message)}</p><a class="btn" href="/">Створити нове</a></div>`; return; }
   setInterval(async () => {
     const a = document.activeElement;
-    if (busy || editing || preview || renaming || (a && /INPUT|TEXTAREA/.test(a.tagName) && a.value && !a.readOnly)) return;
+    if (busy || editing || preview || renaming || $('#np_save') || (a && /INPUT|TEXTAREA/.test(a.tagName) && a.value && !a.readOnly)) return;
     try { const n = await api('GET', '/orders/' + orderId); if (JSON.stringify(n) !== JSON.stringify(order)) { order = n; renderOrder(); } } catch { }
   }, 5000);
 }
