@@ -4,67 +4,86 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Кава на всіх</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Overpass+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f1ea;--card:#fff;--ink:#2a1f17;--mute:#7a6a5c;--accent:#b5541b;--accent2:#8f4012;--ok:#2e7d4f;--oksoft:#e3f3e9;--line:#e6dccf;--soft:#fbf3e6}
-@media (prefers-color-scheme:dark){:root{--bg:#1c1612;--card:#2a211b;--ink:#f3e9de;--mute:#b3a291;--accent:#e0813f;--accent2:#f09a5c;--ok:#5cc08a;--oksoft:#1f3a2a;--line:#43372d;--soft:#352a20}}
+/* Riso: двоколірний друк. Синя фарба (--ink) тримає структуру, флуоресцентний рожевий (--hot) — лише дії. */
+:root{--paper:#f2eee1;--card:#fbf8ef;--ink:#2c3a8c;--mute:#5b5f86;--line:#b9bfdd;--hot:#f0248f;--hot-ink:#fff;--ok:#1f7a5a;--wash:#e7e6ee;--font:'Space Grotesk',system-ui,sans-serif;--mono:'Overpass Mono',ui-monospace,Menlo,monospace;--off:4px}
+@media (prefers-color-scheme:dark){:root{--paper:#14183a;--card:#1b2050;--ink:#c9d0ff;--mute:#9aa2d6;--line:#3b4488;--hot:#ff4fa8;--hot-ink:#14183a;--ok:#5fd3a6;--wash:#232a63}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-main{max-width:640px;margin:0 auto;padding:16px 16px 48px}
-h1{font-size:24px;margin:4px 0}h2{font-size:19px;margin:0 0 6px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
-.card.hero{border:2px solid var(--accent)}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--font)}
+main{max-width:640px;margin:0 auto;padding:20px 16px 56px}
+h1{font:700 34px/1.05 var(--font);letter-spacing:-.02em;margin:6px 0 6px}
+h2{font:700 20px/1.2 var(--font);letter-spacing:-.01em;margin:0 0 8px}
+.eyebrow{font:700 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--hot)}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:4px;padding:18px;margin:18px 0}
+.card.hero{box-shadow:var(--off) var(--off) 0 0 var(--hot)}
 .mute{color:var(--mute);font-size:14px}
-label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
-input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--bg);color:var(--ink)}
-input:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+label{display:block;font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;margin:14px 0 5px;color:var(--ink)}
+input,textarea{width:100%;padding:12px;border:2px solid var(--ink);border-radius:2px;font:inherit;background:var(--paper);color:var(--ink)}
+input::placeholder,textarea::placeholder{color:var(--mute);opacity:.7}
+input:focus,textarea:focus{outline:none;box-shadow:3px 3px 0 0 var(--hot)}
 textarea{resize:vertical;min-height:64px}
-button,.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none}
-button:hover,.btn:hover{background:var(--accent2)}
+button,.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--ink);border-radius:2px;padding:11px 18px;font:700 15px var(--font);background:var(--hot);color:var(--hot-ink);cursor:pointer;text-decoration:none;box-shadow:3px 3px 0 0 var(--ink);transition:transform 80ms,box-shadow 80ms}
+button:hover,.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 0 var(--ink)}
+button:active,.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 0 var(--ink)}
+button:focus-visible,.btn:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
 .wide{width:100%}
-button.ghost,.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
-button.link{background:none;color:var(--accent);padding:0;font-weight:500;text-decoration:underline}
-button.sm{padding:6px 10px;font-size:13px}
-button:disabled{opacity:.5;cursor:default}
-a{color:var(--accent)}
+button.ghost,.btn.ghost{background:transparent;color:var(--ink);box-shadow:none}
+button.ghost:hover{background:var(--wash);transform:none;box-shadow:none}
+button.link{background:none;border:0;box-shadow:none;color:var(--ink);padding:0;font-weight:500;text-decoration:underline;text-underline-offset:3px}
+button.link:hover,button.link:active{transform:none;box-shadow:none;color:var(--hot)}
+button.sm{padding:6px 10px;font-size:13px;box-shadow:2px 2px 0 0 var(--ink)}
+button.ghost.sm{box-shadow:none}
+button:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
+a{color:var(--ink);text-underline-offset:3px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1 1 150px}
 .inline{display:flex;gap:8px}.inline input{flex:1;min-width:0}
-.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 4px}
-.bar>i{display:block;height:100%;background:var(--accent)}.bar.full>i{background:var(--ok)}
-.how{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}
-.how li{display:flex;gap:10px;align-items:flex-start}
-.how>li>b{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:13px;flex:none;margin-top:1px}
-.err{color:#c0392b;font-size:14px;margin-top:6px}
+.bar{height:18px;border:2px solid var(--ink);border-radius:2px;margin:10px 0 6px;background:repeating-linear-gradient(135deg,transparent 0 5px,var(--line) 5px 6px);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--ink)}.bar.full>i{background:var(--ok)}
+.how{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.how li{display:flex;gap:12px;align-items:flex-start}
+.how>li>b{min-width:26px;font:700 14px var(--mono);color:var(--hot);padding-top:2px}
+.err{color:#c4125f;font-weight:500;font-size:14px;margin-top:8px}
 .err:empty{display:none}
-.tip{background:var(--soft);padding:10px 12px;border-radius:10px;font-size:14px;margin-top:10px}
-.prev{display:flex;gap:12px;margin-top:14px;padding:14px;background:var(--soft);border-radius:12px}
-.prev img,.item img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex:none;background:var(--line)}
-.qty{display:inline-flex;align-items:center;gap:6px}.qty button{width:34px;height:34px;padding:0}.qty span{min-width:22px;text-align:center;font-weight:700}
-.item{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:15px}.item:first-child{border:0}
+.tip{background:var(--wash);border:2px dashed var(--line);padding:10px 12px;border-radius:2px;font-size:14px;margin-top:12px}
+.prev{display:flex;gap:12px;margin-top:14px;padding:14px;border:2px dashed var(--ink);border-radius:2px}
+.prev img,.item img{width:56px;height:56px;object-fit:cover;border:2px solid var(--ink);border-radius:2px;flex:none;background:var(--wash)}
+.qty{display:inline-flex;align-items:center;gap:6px}.qty button{width:34px;height:34px;padding:0;box-shadow:none}.qty span{min-width:24px;text-align:center;font:700 16px var(--mono)}
+.item{display:flex;gap:10px;align-items:center;padding:12px 0;border-top:2px solid var(--line);font-size:15px}.item:first-child{border:0}
 .item .t{flex:1;min-width:0}
-.payme{margin-top:16px;padding:16px;border-radius:12px;background:var(--soft)}
-.payme.ok{background:var(--oksoft)}
-.sum{font-size:30px;font-weight:800;line-height:1.1}
-.mono{font:700 19px ui-monospace,Menlo,monospace;letter-spacing:.5px;word-break:break-all}
-.paybox{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.payme{margin-top:18px;padding:16px;border:2px solid var(--ink);border-radius:2px;background:var(--paper)}
+.payme.ok{background:var(--ok);color:var(--paper);border-color:var(--ok)}
+.payme.ok .mute{color:inherit;opacity:.85}
+.sum{font:700 44px/1 var(--font);letter-spacing:-.03em;margin:4px 0}
+.mono{font:700 19px var(--mono);letter-spacing:.04em;word-break:break-all}
+.paybox{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
 table{width:100%;border-collapse:collapse;font-size:15px}
-td{padding:9px 0;border-top:1px solid var(--line);vertical-align:top}tr:first-child td{border:0}
-td.r{text-align:right;white-space:nowrap;font-weight:700}
-.badge{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--line);white-space:nowrap}.badge.ok{background:var(--ok);color:#fff}
+td{padding:11px 0;border-top:2px solid var(--line);vertical-align:top}tr:first-child td{border:0}
+td.r{text-align:right;white-space:nowrap;font:700 16px var(--mono)}
+.badge{display:inline-block;font:700 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:2px solid var(--ink);border-radius:2px;white-space:nowrap;margin-top:3px}.badge.ok{background:var(--ok);border-color:var(--ok);color:var(--paper)}
 details{margin-top:6px}summary{cursor:pointer;color:var(--mute);font-size:14px}
-.adminbar{background:var(--ink);color:var(--bg);border-radius:14px;padding:14px 16px;margin:10px 0}
-.adminbar .mute{color:inherit;opacity:.75}
-.adminbar input{background:rgba(255,255,255,.1);color:inherit;border-color:transparent}
-.adminbar .ghost{color:inherit;border-color:rgba(255,255,255,.3)}
+.adminbar{background:var(--ink);color:var(--paper);border-radius:4px;padding:16px;margin:0 0 18px}
+.adminbar .mute{color:inherit;opacity:.8}
+.adminbar input{background:transparent;color:inherit;border-color:var(--paper)}
+.adminbar input:focus{box-shadow:3px 3px 0 0 var(--hot)}
+.adminbar button{border-color:var(--paper);box-shadow:3px 3px 0 0 var(--paper)}
+.adminbar button.ghost{color:inherit;box-shadow:none;border-color:var(--paper)}
+.adminbar button.ghost:hover{background:rgba(255,255,255,.12)}
+.adminbar .tip{background:transparent;border-color:rgba(255,255,255,.4);color:inherit}
+.adminbar label{color:inherit}
 .hide{display:none!important}
 .ac{position:relative}
-.acl{position:absolute;left:0;right:0;top:100%;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;max-height:260px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.acl{position:absolute;left:0;right:0;top:100%;z-index:5;background:var(--card);border:2px solid var(--ink);border-top:0;max-height:260px;overflow:auto;box-shadow:4px 4px 0 0 var(--hot)}
 .acl:empty{display:none}
-.acl button{display:block;width:100%;text-align:left;background:none;color:var(--ink);font-weight:400;border-radius:0;padding:10px 12px;border-bottom:1px solid var(--line)}
-.acl button:hover{background:var(--soft)}
-.np{margin-top:14px;padding:14px;border-radius:12px;background:var(--soft)}
+.acl button{display:block;width:100%;text-align:left;background:none;color:var(--ink);font-weight:400;border:0;border-radius:0;box-shadow:none;padding:10px 12px;border-bottom:1px solid var(--line)}
+.acl button:hover{background:var(--wash);transform:none;box-shadow:none}
+.np{margin-top:10px}
 .np label:first-child{margin-top:0}
-.adminbar .tip{background:rgba(255,255,255,.08);color:inherit}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.stamp{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.big-n{font:700 22px var(--mono)}
+@media (prefers-reduced-motion:reduce){button{transition:none}}
 </style>
 </head>
 <body>
@@ -105,10 +124,9 @@ function settingsForm(o = {}) {
   <input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
   <label>або посилання на банку <span class="mute">(необовʼязково)</span></label>
   <input id="f_link" value="${esc(p.link || '')}" placeholder="https://send.monobank.ua/jar/…">
-  ${npForm(o.np)}
-  <details ${o.id ? 'open' : ''}><summary>Додатково: коментар до доставки, мінімум пачок, назва</summary>
-    <label>Інша адреса або коментар до доставки</label>
-    <textarea id="f_addr" placeholder="Напр. забираю з відділення у суботу">${esc(o.address || '')}</textarea>
+  <details ${o.id ? 'open' : ''}><summary>Додатково: коментар, мінімум пачок, назва</summary>
+    <label>Коментар до доставки (необовʼязково)</label>
+    <textarea id="f_addr" placeholder="Напр. роздам каву в суботу">${esc(o.address || '')}</textarea>
     <label>Отримувач на картці <span class="mute">(щоб люди бачили, що переказують правильно)</span></label>
     <input id="f_holder" value="${esc(p.holder || '')}" placeholder="Петро І.">
     <label>Коментар для всіх</label>
@@ -122,21 +140,25 @@ function settingsForm(o = {}) {
 }
 /* ---------- Нова пошта: місто -> відділення ---------- */
 let npSel = {};
-function npForm(np) {
-  npSel = { ...(np || {}) };
+function npForm(d, name) {
+  npSel = d && d.warehouse ? { city: d.city, warehouse: d.warehouse, cityRef: d.cityRef, warehouseRef: d.warehouseRef } : {};
+  d = d || {};
   return `<div class="np">
-    <label>📦 Куди MadHeads відправить посилку (Нова пошта)</label>
-    <div class="ac"><input id="np_city" value="${esc(npSel.city || '')}" placeholder="Почніть вводити місто" autocomplete="off"><div class="acl" id="np_city_l"></div></div>
-    <div class="ac" style="margin-top:8px"><input id="np_wh" value="${esc(npSel.warehouse || '')}" placeholder="Номер відділення / поштомату або вулиця" autocomplete="off" ${npSel.cityRef ? '' : 'disabled'}><div class="acl" id="np_wh_l"></div></div>
+    <label>Місто</label>
+    <div class="ac"><input id="np_city" value="${esc(d.city || '')}" placeholder="Почніть вводити місто" autocomplete="off"><div class="acl" id="np_city_l"></div></div>
+    <label>Відділення або поштомат Нової пошти</label>
+    <div class="ac"><input id="np_wh" value="${esc(d.warehouse || '')}" placeholder="Номер відділення або вулиця" autocomplete="off" disabled><div class="acl" id="np_wh_l"></div></div>
     <div class="row">
-      <div><label>Отримувач (ПІБ)</label><input id="np_rec" value="${esc(npSel.recipient || '')}" placeholder="Петренко Петро"></div>
-      <div><label>Телефон отримувача</label><input id="np_phone" type="tel" value="${esc(npSel.phone || '')}" placeholder="+380…"></div>
+      <div><label>Отримувач (ПІБ)</label><input id="np_rec" value="${esc(d.recipient || name || '')}" placeholder="Петренко Петро"></div>
+      <div><label>Телефон отримувача</label><input id="np_phone" type="tel" value="${esc(d.phone || '')}" placeholder="+380…"></div>
     </div>
-    <div class="err" id="np_err"></div></div>`;
+    <div class="err" id="np_err"></div>
+    <div class="row" style="margin-top:10px"><button id="np_save">Зберегти адресу</button>${dlvEditing && d.warehouse ? '<button class="ghost" id="np_cancel" style="flex:0 0 auto">Скасувати</button>' : ''}</div></div>`;
 }
 function bindNp() {
   const city = $('#np_city'), wh = $('#np_wh');
   if (!city) return;
+  wh.disabled = !npSel.cityRef;
   let t1, t2;
   const list = (box, items, pick) => {
     box.innerHTML = items.length ? items.map((it, i) => `<button type="button" data-i="${i}">${esc(it.name)}</button>`).join('') : '';
@@ -154,39 +176,61 @@ function bindNp() {
   };
   wh.oninput = () => { delete npSel.warehouseRef; clearTimeout(t2); t2 = setTimeout(loadWh, 300); };
   wh.onfocus = () => { if (npSel.cityRef && !npSel.warehouseRef) loadWh(); };
-  [city, wh].forEach(i => i.onblur = () => setTimeout(() => { $('#np_city_l').innerHTML = ''; $('#np_wh_l').innerHTML = ''; }, 150));
+  [city, wh].forEach(i => i.onblur = () => setTimeout(() => { const x = $('#np_city_l'), y = $('#np_wh_l'); if (x) x.innerHTML = ''; if (y) y.innerHTML = ''; }, 150));
+}
+
+function bindDelivery() {
+  bindNp();
+  if (!$('#np_save')) return;
+  $('#np_cancel') && ($('#np_cancel').onclick = () => { dlvEditing = false; renderOrder(); });
+  $('#np_save').onclick = async e => {
+    e.target.disabled = true;
+    try {
+      if (!npSel.warehouseRef) throw new Error('Оберіть місто й відділення зі списку, що зʼявляється під полем.');
+      order = await api('POST', `/orders/${order.id}/delivery`, { person: myName(), ...npSel, recipient: $('#np_rec').value, phone: $('#np_phone').value });
+      dlvEditing = false; renderOrder();
+    } catch (er) { $('#np_err').textContent = er.message; e.target.disabled = false; }
+  };
+}
+function deliveryBlock(o, name) {
+  const d = (o.deliveries || {})[name];
+  const mine = d && d.mine;
+  if (mine && !dlvEditing) return `<div class="payme" style="background:var(--oksoft)"><div class="top"><b>Куди відправимо вашу каву</b><button class="link sm" id="dlv_edit">змінити</button></div>
+    <div style="margin-top:6px">${esc(d.city)}</div><div>${esc(d.warehouse)}</div><div class="mute">${esc(d.recipient)}, ${esc(d.phone)}</div></div>`;
+  return `<div class="payme"><b>Куди відправити вашу каву?</b>
+    <p class="mute" style="margin:4px 0 0">${esc(o.organizer)} отримає каву й перешле вам Новою поштою. Оберіть відділення, куди зручно забрати — тоді нічого не доведеться уточнювати.</p>
+    ${npForm(mine ? d : null, name)}</div>`;
 }
 
 function readSettings() {
-  return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, np: npSel.warehouseRef ? { ...npSel, recipient: $('#np_rec').value, phone: $('#np_phone').value } : null, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
+  return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
     payment: { card: $('#f_card').value, holder: $('#f_holder').value, link: $('#f_link').value, note: $('#f_note').value } };
 }
 
 /* ================= Головна: створити замовлення ================= */
 function renderHome() {
   app.innerHTML = `
-  <h1>☕ Кава на всіх</h1>
-  <p class="mute">Спільне оптове замовлення кави MadHeads з друзями — без переписок «скільки я винен і куди кидати».</p>
+  <div class="eyebrow">Складчина · MadHeads</div>
+  <h1>Кава на всіх</h1>
+  <p class="mute">Беремо каву гуртом — по оптовій ціні. Кожен бачить, скільки скинути й куди. Жодних переписок.</p>
   <div class="card">
     <h2>Як це працює</h2>
     <ol class="how">
-      <li><b>1</b><div>Ви вказуєте, кому скидати гроші, — і отримуєте <b>посилання</b>.</div></li>
-      <li><b>2</b><div>Кидаєте його друзям у чат. Кожен вставляє посилання на свою каву з MadHeads і бачить, <b>скільки і куди скинути</b>.</div></li>
-      <li><b>3</b><div>Ви бачите, хто що бере, скільки пачок набрано, і відмічаєте, хто вже оплатив.</div></li>
+      <li><b>01</b><div>Ви вказуєте, кому скидати гроші, — і отримуєте <b>посилання</b>.</div></li>
+      <li><b>02</b><div>Кидаєте його друзям у чат. Кожен вставляє посилання на свою каву з MadHeads і бачить, <b>скільки і куди скинути</b>.</div></li>
+      <li><b>03</b><div>Ви бачите, хто що бере, скільки пачок набрано, і відмічаєте, хто вже оплатив.</div></li>
     </ol>
   </div>
   <div class="card hero">
     <h2>Створити замовлення</h2>
     ${settingsForm()}
-    <button id="create" class="wide" style="margin-top:16px">Створити й отримати посилання →</button>
+    <button id="create" class="wide" style="margin-top:16px">Створити й отримати посилання</button>
     <div class="err" id="err"></div>
   </div>
   <p class="mute">Вам надіслали посилання? Просто відкрийте його — тут нічого створювати не треба.</p>`;
-  bindNp();
   $('#create').onclick = async e => {
     e.target.disabled = true;
     try {
-      if ($('#np_city').value.trim() && !npSel.warehouseRef) throw new Error('Оберіть відділення Нової пошти зі списку (або зітріть місто).');
       const s = readSettings();
       if (!s.organizer.trim()) throw new Error('Вкажіть імʼя того, хто замовляє.');
       if (!s.payment.card.trim() && !s.payment.link.trim()) throw new Error('Вкажіть картку або посилання на банку — інакше друзі не знатимуть, куди скидати.');
@@ -199,6 +243,7 @@ function renderHome() {
 }
 
 /* ================= Сторінка замовлення ================= */
+let dlvEditing = false;
 let order = null, preview = null, editing = false, busy = false, renaming = false;
 const myName = () => ls.get('mh_name_' + orderId) || ls.get('mh_name');
 
@@ -216,7 +261,8 @@ function summaryText(o, c) {
   o.items.forEach(i => { (agg[i.name] ||= { qty: 0, url: i.url }).qty += i.qty; });
   return `${o.title}: ${packs(c.total)}, ${money(c.sum + o.shipping)}\n\nЩО ЗАМОВЛЯТИ:\n` +
     Object.entries(agg).map(([n, a]) => `• ${n} — ${a.qty} шт.${a.url ? '\n  ' + a.url : ''}`).join('\n') +
-    '\n\nХТО СКІЛЬКИ СКИДАЄ:\n' + c.list.map(p => `• ${p.name}: ${packs(p.packs)} → ${money(p.pay)}${o.paid[p.name] ? ' ✓ оплачено' : ''}`).join('\n');
+    '\n\nХТО СКІЛЬКИ СКИДАЄ:\n' + c.list.map(p => `• ${p.name}: ${packs(p.packs)} → ${money(p.pay)}${o.paid[p.name] ? ' ✓ оплачено' : ''}`).join('\n') +
+    '\n\nКУДИ ВІДПРАВЛЯТИ КАВУ:\n' + c.list.map(p => { const d = (o.deliveries || {})[p.name]; return `• ${p.name} (${packs(p.packs)}): ` + (d ? `${d.city}, ${d.warehouse}; ${d.recipient}, ${d.phone}` : 'адресу не вказано'); }).join('\n');
 }
 
 function renderOrder() {
@@ -231,51 +277,52 @@ function renderOrder() {
   app.innerHTML = `
   ${o.isAdmin ? adminBar(o, c, link, isNew) : ''}
 
-  <div class="top"><h1>☕ ${esc(o.title)}</h1></div>
+  <div class="eyebrow">Складчина · MadHeads</div>
+  <h1>${esc(o.title)}</h1>
   <div class="mute">Збирає і замовляє: <b>${esc(o.organizer)}</b></div>
   <div class="bar ${left <= 0 ? 'full' : ''}"><i style="width:${pct}%"></i></div>
-  <div class="mute">${left > 0 ? `Набрано ${packs(c.total)} з ${o.minPacks} — бракує ще <b>${packs(left)}</b> до оптової ціни` : `🎉 Набрано ${packs(c.total)} — мінімум для опту є!`}</div>
+  <div class="mute">${left > 0 ? `Набрано ${packs(c.total)} з ${o.minPacks} — бракує ще <b>${packs(left)}</b> до оптової ціни` : `Набрано ${packs(c.total)}. Мінімум для опту є — можна замовляти.`}</div>
 
-  <div class="tip">💡 Усі ціни — <b>оптові</b> (від ${o.minPacks} пачок на всіх). Вони діють, коли разом набереться ${packs(o.minPacks)}.</div>
+  <div class="tip">Усі ціни — <b>оптові</b> (від ${o.minPacks} пачок на всіх). Вони діють, коли разом набереться ${packs(o.minPacks)}.</div>
 
   <div class="card hero">
     ${!name || renaming ? `
       <h2>Як вас звати?</h2>
       <p class="mute" style="margin:0">Щоб ${esc(o.organizer)} знав(-ла), чия це кава і від кого переказ.</p>
-      <div class="inline" style="margin-top:10px"><input id="name" value="${esc(name)}" placeholder="Ваше імʼя" autocomplete="given-name"><button id="saveName">Далі →</button></div>
+      <div class="inline" style="margin-top:10px"><input id="name" value="${esc(name)}" placeholder="Ваше імʼя" autocomplete="given-name"><button id="saveName">Далі</button></div>
       <div class="err" id="err"></div>`
     : `
       <div class="top"><h2>${myItems.length ? 'Ваша кава' : 'Що берете, ' + esc(name) + '?'}</h2><button class="link sm" id="rename">Я не ${esc(name)}</button></div>
       ${myItems.length ? `<div>${myItems.map(i => itemRow(i, true)).join('')}</div>` : ''}
       ${addCoffee(myItems.length)}
-      ${me ? payBlock(o, me) : ''}`}
+      ${me ? payBlock(o, me) : ''}
+      ${myItems.length || (o.deliveries || {})[name] ? deliveryBlock(o, name) : ''}`}
   </div>
 
   ${c.list.length ? `<div class="card">
     <h2>Усе замовлення</h2>
     <table>${c.list.map(p => `<tr><td><b>${esc(p.name)}</b> <span class="mute">${packs(p.packs)}</span>
-        <details><summary>що бере</summary>${p.items.map(i => itemRow(i, o.isAdmin && !i.mine)).join('')}${p.ship ? `<div class="mute">+ доставка ${money(p.ship)}</div>` : ''}</details></td>
+        <details><summary>що бере</summary>${p.items.map(i => itemRow(i, o.isAdmin && !i.mine)).join('')}${p.ship ? `<div class="mute">+ доставка ${money(p.ship)}</div>` : ''}</details>
+        ${o.isAdmin ? ((o.deliveries || {})[p.name] ? `<div class="mute" style="margin-top:4px">Нова пошта: ${esc(o.deliveries[p.name].city)}, ${esc(o.deliveries[p.name].warehouse)} — ${esc(o.deliveries[p.name].recipient)}, ${esc(o.deliveries[p.name].phone)}</div>` : `<div class="mute" style="margin-top:4px">адресу доставки ще не вказано</div>`) : ''}</td>
       <td class="r">${money(p.pay)}<br>${o.paid[p.name] ? '<span class="badge ok">оплачено</span>' : '<span class="badge">не оплачено</span>'}
         ${o.isAdmin ? `<br><button class="link sm" data-paid="${esc(p.name)}" data-v="${o.paid[p.name] ? 0 : 1}">${o.paid[p.name] ? 'зняти' : 'отримав ✓'}</button>` : ''}</td></tr>`).join('')}
       <tr><td><b>Разом</b> <span class="mute">${packs(c.total)}</span></td><td class="r">${money(c.sum + o.shipping)}</td></tr>
     </table></div>` : ''}
 
-  ${o.np || o.address ? `<div class="card"><h2>Куди приїде посилка</h2>
-    ${o.np ? `<div>📦 Нова пошта: <b>${esc(o.np.city)}</b></div><div>${esc(o.np.warehouse)}</div>${o.np.recipient ? `<div class="mute">Отримувач: ${esc(o.np.recipient)}${o.np.phone ? ', ' + esc(o.np.phone) : ''}</div>` : ''}` : ''}
-    ${o.address ? `<div style="margin-top:6px">${esc(o.address).replace(/\n/g, '<br>')}</div>` : ''}<p class="mute" style="margin-bottom:0">Звідти ${esc(o.organizer)} роздасть каву.</p></div>` : ''}
+  ${o.address ? `<div class="card"><h2>Коментар до доставки</h2><div>${esc(o.address).replace(/\n/g, '<br>')}</div></div>` : ''}
   ${!o.isAdmin ? `<p class="mute" style="text-align:center">Це ви збираєте замовлення? <a href="/">Створити своє</a></p>` : ''}`;
   bind();
 }
 
 function adminBar(o, c, link, isNew) {
   return `<div class="adminbar">
-    <div><b>${isNew ? '✅ Замовлення створено! ' : ''}Ви організатор.</b> ${isNew ? 'Тепер надішліть це посилання друзям у чат:' : 'Посилання для друзів:'}</div>
+    <div><b>${isNew ? 'Замовлення створено. ' : ''}Ви організатор.</b> ${isNew ? 'Тепер надішліть це посилання друзям у чат:' : 'Посилання для друзів:'}</div>
     <div class="inline" style="margin-top:8px"><input readonly value="${esc(link)}" onclick="this.select()"><button id="cplink">Скопіювати</button></div>
     <div class="row" style="margin-top:10px">
-      <button class="ghost sm" id="cpsum">📋 Зведення для замовлення</button>
-      <button class="ghost sm" id="edit">⚙ Картка, адреса…</button>
-      <button class="ghost sm" id="cpadmin">🔑 Посилання організатора</button>
-      <button class="ghost sm" id="refresh">🔄 Оновити ціни з сайту</button>
+      <button class="ghost sm" id="cpsum">Зведення для замовлення</button>
+      <button class="ghost sm" id="edit">Картка та налаштування</button>
+      <button class="ghost sm" id="cpadmin">Посилання організатора</button>
+      <button class="ghost sm" id="refresh">Оновити ціни з сайту</button>
     </div>
     <div class="mute" style="margin-top:8px;font-size:13px">«Посилання організатора» — щоб відкрити цю панель з іншого пристрою або передати її тому, хто замовлятиме. Друзям його не давайте.</div>
     <div id="editbox" class="${editing ? '' : 'hide'}" style="margin-top:6px">${settingsForm(o)}<button id="saveset" style="margin-top:12px">Зберегти</button><div class="err" id="err2"></div></div>
@@ -286,7 +333,7 @@ function itemRow(i, editable) {
   return `<div class="item">${i.image ? `<img src="${esc(i.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
     <div class="t">${i.url ? `<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.name)}</a>` : esc(i.name)}
       <div class="mute">${i.qty} × ${money(i.price)}${i.retail > i.price ? ` <s>${money(i.retail)}</s>` : ''} = ${money(i.qty * i.price)}</div></div>
-    ${editable ? `<div class="qty"><button class="ghost" data-q="${i.id}:${i.qty - 1}" ${i.qty <= 1 ? 'disabled' : ''}>−</button><span>${i.qty}</span><button class="ghost" data-q="${i.id}:${i.qty + 1}">+</button><button class="ghost" data-del="${i.id}" title="Прибрати">✕</button></div>` : ''}</div>`;
+    ${editable ? `<div class="qty"><button class="ghost" data-q="${i.id}:${i.qty - 1}" ${i.qty <= 1 ? 'disabled' : ''}>−</button><span>${i.qty}</span><button class="ghost" data-q="${i.id}:${i.qty + 1}">+</button><button class="ghost" data-del="${i.id}" title="Прибрати">×</button></div>` : ''}</div>`;
 }
 
 function addCoffee(hasItems) {
@@ -297,31 +344,31 @@ function addCoffee(hasItems) {
         <div><label>Оптова ціна за пачку, ₴${preview.retail > preview.price ? ` <span class="mute">(роздріб ${money(preview.retail)})</span>` : ''}</label><input id="pv_price" type="number" min="0" step="any" value="${preview.price || ''}" placeholder="0"></div>
         <div><label>Скільки пачок</label><div class="qty"><button class="ghost" id="qm">−</button><span id="pv_qty">${preview.qty}</span><button class="ghost" id="qp">+</button></div></div>
       </div>
-      ${preview.warning ? `<div class="tip">⚠️ ${esc(preview.warning)}</div>` : ''}
+      ${preview.warning ? `<div class="tip">${esc(preview.warning)}</div>` : ''}
       <div class="row" style="margin-top:14px"><button id="add">Додати</button><button class="ghost" id="cancel" style="flex:0 0 auto">Скасувати</button></div>
       <div class="err" id="err3"></div>
     </div></div>`;
   return `
     ${hasItems ? '<label>Додати ще одну каву</label>' : `<ol class="how" style="margin-bottom:12px">
-      <li><b>1</b><div>Відкрийте сайт MadHeads і знайдіть каву, яку хочете.</div></li>
-      <li><b>2</b><div>Скопіюйте адресу сторінки з рядка браузера (або «Поділитися → Копіювати»).</div></li>
-      <li><b>3</b><div>Вставте її сюди 👇</div></li></ol>`}
+      <li><b>01</b><div>Відкрийте сайт MadHeads і знайдіть каву, яку хочете.</div></li>
+      <li><b>02</b><div>Скопіюйте адресу сторінки з рядка браузера (або «Поділитися → Копіювати»).</div></li>
+      <li><b>03</b><div>Вставте її в поле нижче.</div></li></ol>`}
     <div class="inline"><input id="url" placeholder="Вставте посилання на каву" inputmode="url"><button id="fetch">Додати</button></div>
     <div class="err" id="err"></div>`;
 }
 
 function payBlock(o, me) {
   const p = o.payment, paid = o.paid[me.name];
-  if (paid) return `<div class="payme ok"><div class="sum">✓ ${money(me.pay)} оплачено</div><div class="mute">${esc(o.organizer)} підтвердив(-ла) переказ. Дякуємо!</div></div>`;
+  if (paid) return `<div class="payme ok"><div class="sum">${money(me.pay)} — оплачено</div><div class="mute">${esc(o.organizer)} підтвердив(-ла) переказ. Дякуємо!</div></div>`;
   return `<div class="payme">
     <div class="mute">Вам скинути ${esc(o.organizer)}</div>
     <div class="sum">${money(me.pay)}</div>
     <div class="mute">${packs(me.packs)}${me.ship ? ` · з них доставка ${money(me.ship)}` : ''}</div>
-    ${p.card ? `<div class="paybox"><span class="mono">${esc(p.card)}</span><button class="sm" data-copy="${esc(p.card.replace(/\s/g, ''))}">Копіювати картку</button></div>` : ''}
+    ${p.card ? `<div class="paybox"><span class="mono">${esc(p.card)}</span><button class="ghost sm" data-copy="${esc(p.card.replace(/\s/g, ''))}">Копіювати картку</button></div>` : ''}
     ${p.holder ? `<div class="mute">Отримувач: ${esc(p.holder)}</div>` : ''}
-    ${p.link ? `<div class="paybox"><a class="btn" href="${esc(p.link)}" target="_blank" rel="noopener">Оплатити через банку →</a></div>` : ''}
+    ${p.link ? `<div class="paybox"><a class="btn" href="${esc(p.link)}" target="_blank" rel="noopener">Оплатити через банку</a></div>` : ''}
     ${!p.card && !p.link ? '<div class="tip">Організатор ще не вказав, куди скидати. Зазирніть сюди трохи пізніше.</div>' : ''}
-    ${p.note ? `<div class="tip">💬 ${esc(p.note)}</div>` : ''}
+    ${p.note ? `<div class="tip">${esc(p.note)}</div>` : ''}
     <div class="mute" style="margin-top:8px">${money(me.pay)} — у коментарі до переказу напишіть «${esc(me.name)}, кава». Коли ${esc(o.organizer)} отримає, тут зʼявиться «оплачено».</div>
   </div>`;
 }
@@ -349,6 +396,8 @@ function bind() {
     };
     if (!preview.price) $('#pv_price').focus();
   }
+  $('#dlv_edit') && ($('#dlv_edit').onclick = () => { dlvEditing = true; renderOrder(); });
+  bindDelivery();
   $$('[data-copy]').forEach(b => b.onclick = () => copy(b.dataset.copy, b));
   $$('[data-del]').forEach(b => b.onclick = () => confirm('Прибрати цю каву?') && act(() => api('DELETE', `/orders/${o.id}/items/${b.dataset.del}`)));
   $$('[data-q]').forEach(b => b.onclick = () => { const [id, q] = b.dataset.q.split(':'); if (+q >= 1) act(() => api('PATCH', `/orders/${o.id}/items/${id}`, { qty: +q })); });
@@ -360,7 +409,6 @@ function bind() {
     $('#refresh').onclick = async e => { e.target.disabled = true; e.target.textContent = 'Оновлюю…'; try { const r = await api('POST', `/orders/${o.id}/refresh`); delete r.updated; order = r; renderOrder(); } catch (er) { alert(er.message); e.target.disabled = false; } };
     $('#cpsum').onclick = e => copy(summaryText(o, calc(o)), e.target);
     $('#edit').onclick = () => { editing = !editing; $('#editbox').classList.toggle('hide', !editing); };
-    bindNp();
     $('#saveset').onclick = async () => { try { order = await api('PUT', '/orders/' + o.id, readSettings()); editing = false; renderOrder(); } catch (er) { $('#err2').textContent = er.message; } };
   }
 }
@@ -382,7 +430,7 @@ async function load() {
   catch (e) { app.innerHTML = `<div class="card"><h2>Замовлення не знайдено</h2><p>${esc(e.message)}</p><a class="btn" href="/">Створити нове</a></div>`; return; }
   setInterval(async () => {
     const a = document.activeElement;
-    if (busy || editing || preview || renaming || (a && /INPUT|TEXTAREA/.test(a.tagName) && a.value && !a.readOnly)) return;
+    if (busy || editing || preview || renaming || $('#np_save') || (a && /INPUT|TEXTAREA/.test(a.tagName) && a.value && !a.readOnly)) return;
     try { const n = await api('GET', '/orders/' + orderId); if (JSON.stringify(n) !== JSON.stringify(order)) { order = n; renderOrder(); } } catch { }
   }, 5000);
 }
