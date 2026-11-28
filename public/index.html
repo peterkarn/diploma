@@ -56,6 +56,14 @@ details{margin-top:6px}summary{cursor:pointer;color:var(--mute);font-size:14px}
 .adminbar input{background:rgba(255,255,255,.1);color:inherit;border-color:transparent}
 .adminbar .ghost{color:inherit;border-color:rgba(255,255,255,.3)}
 .hide{display:none!important}
+.ac{position:relative}
+.acl{position:absolute;left:0;right:0;top:100%;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;max-height:260px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.acl:empty{display:none}
+.acl button{display:block;width:100%;text-align:left;background:none;color:var(--ink);font-weight:400;border-radius:0;padding:10px 12px;border-bottom:1px solid var(--line)}
+.acl button:hover{background:var(--soft)}
+.np{margin-top:14px;padding:14px;border-radius:12px;background:var(--soft)}
+.np label:first-child{margin-top:0}
+.adminbar .tip{background:rgba(255,255,255,.08);color:inherit}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
 </style>
 </head>
@@ -97,9 +105,10 @@ function settingsForm(o = {}) {
   <input id="f_card" value="${esc(p.card || '')}" inputmode="numeric" placeholder="4441 1111 2222 3333">
   <label>або посилання на банку <span class="mute">(необовʼязково)</span></label>
   <input id="f_link" value="${esc(p.link || '')}" placeholder="https://send.monobank.ua/jar/…">
-  <details ${o.id ? 'open' : ''}><summary>Додатково: адреса, мінімум пачок, доставка, назва</summary>
-    <label>Куди приїде посилка <span class="mute">(щоб ніхто не питав)</span></label>
-    <textarea id="f_addr" placeholder="Київ, Нова пошта №12">${esc(o.address || '')}</textarea>
+  ${npForm(o.np)}
+  <details ${o.id ? 'open' : ''}><summary>Додатково: коментар до доставки, мінімум пачок, назва</summary>
+    <label>Інша адреса або коментар до доставки</label>
+    <textarea id="f_addr" placeholder="Напр. забираю з відділення у суботу">${esc(o.address || '')}</textarea>
     <label>Отримувач на картці <span class="mute">(щоб люди бачили, що переказують правильно)</span></label>
     <input id="f_holder" value="${esc(p.holder || '')}" placeholder="Петро І.">
     <label>Коментар для всіх</label>
@@ -111,8 +120,45 @@ function settingsForm(o = {}) {
     <label>Назва замовлення</label><input id="f_title" value="${esc(o.title || 'Кава від MadHeads')}">
   </details>`;
 }
+/* ---------- Нова пошта: місто -> відділення ---------- */
+let npSel = {};
+function npForm(np) {
+  npSel = { ...(np || {}) };
+  return `<div class="np">
+    <label>📦 Куди MadHeads відправить посилку (Нова пошта)</label>
+    <div class="ac"><input id="np_city" value="${esc(npSel.city || '')}" placeholder="Почніть вводити місто" autocomplete="off"><div class="acl" id="np_city_l"></div></div>
+    <div class="ac" style="margin-top:8px"><input id="np_wh" value="${esc(npSel.warehouse || '')}" placeholder="Номер відділення / поштомату або вулиця" autocomplete="off" ${npSel.cityRef ? '' : 'disabled'}><div class="acl" id="np_wh_l"></div></div>
+    <div class="row">
+      <div><label>Отримувач (ПІБ)</label><input id="np_rec" value="${esc(npSel.recipient || '')}" placeholder="Петренко Петро"></div>
+      <div><label>Телефон отримувача</label><input id="np_phone" type="tel" value="${esc(npSel.phone || '')}" placeholder="+380…"></div>
+    </div>
+    <div class="err" id="np_err"></div></div>`;
+}
+function bindNp() {
+  const city = $('#np_city'), wh = $('#np_wh');
+  if (!city) return;
+  let t1, t2;
+  const list = (box, items, pick) => {
+    box.innerHTML = items.length ? items.map((it, i) => `<button type="button" data-i="${i}">${esc(it.name)}</button>`).join('') : '';
+    $$('button', box).forEach(b => b.onmousedown = e => { e.preventDefault(); pick(items[+b.dataset.i]); box.innerHTML = ''; });
+  };
+  const load = async (path, box, pick) => {
+    try { $('#np_err').textContent = ''; list(box, await api('GET', path), pick); }
+    catch (e) { $('#np_err').textContent = e.message; }
+  };
+  const loadWh = () => load(`/np/warehouses?city=${npSel.cityRef}&q=${encodeURIComponent(wh.value.trim())}`, $('#np_wh_l'), w => { npSel.warehouse = w.name; npSel.warehouseRef = w.ref; wh.value = w.name; });
+  city.oninput = () => {
+    npSel = {}; wh.value = ''; wh.disabled = true;
+    clearTimeout(t1); t1 = setTimeout(() => load('/np/cities?q=' + encodeURIComponent(city.value.trim()), $('#np_city_l'),
+      c => { npSel.city = c.name; npSel.cityRef = c.ref; city.value = c.name; wh.disabled = false; wh.focus(); }), 300);
+  };
+  wh.oninput = () => { delete npSel.warehouseRef; clearTimeout(t2); t2 = setTimeout(loadWh, 300); };
+  wh.onfocus = () => { if (npSel.cityRef && !npSel.warehouseRef) loadWh(); };
+  [city, wh].forEach(i => i.onblur = () => setTimeout(() => { $('#np_city_l').innerHTML = ''; $('#np_wh_l').innerHTML = ''; }, 150));
+}
+
 function readSettings() {
-  return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
+  return { title: $('#f_title').value, organizer: $('#f_org').value, address: $('#f_addr').value, np: npSel.warehouseRef ? { ...npSel, recipient: $('#np_rec').value, phone: $('#np_phone').value } : null, minPacks: $('#f_min').value, shipping: $('#f_ship').value, currency: '₴',
     payment: { card: $('#f_card').value, holder: $('#f_holder').value, link: $('#f_link').value, note: $('#f_note').value } };
 }
 
@@ -136,9 +182,11 @@ function renderHome() {
     <div class="err" id="err"></div>
   </div>
   <p class="mute">Вам надіслали посилання? Просто відкрийте його — тут нічого створювати не треба.</p>`;
+  bindNp();
   $('#create').onclick = async e => {
     e.target.disabled = true;
     try {
+      if ($('#np_city').value.trim() && !npSel.warehouseRef) throw new Error('Оберіть відділення Нової пошти зі списку (або зітріть місто).');
       const s = readSettings();
       if (!s.organizer.trim()) throw new Error('Вкажіть імʼя того, хто замовляє.');
       if (!s.payment.card.trim() && !s.payment.link.trim()) throw new Error('Вкажіть картку або посилання на банку — інакше друзі не знатимуть, куди скидати.');
@@ -212,7 +260,9 @@ function renderOrder() {
       <tr><td><b>Разом</b> <span class="mute">${packs(c.total)}</span></td><td class="r">${money(c.sum + o.shipping)}</td></tr>
     </table></div>` : ''}
 
-  ${o.address ? `<div class="card"><h2>Куди приїде посилка</h2><div>${esc(o.address).replace(/\n/g, '<br>')}</div><p class="mute" style="margin-bottom:0">Звідти ${esc(o.organizer)} роздасть каву.</p></div>` : ''}
+  ${o.np || o.address ? `<div class="card"><h2>Куди приїде посилка</h2>
+    ${o.np ? `<div>📦 Нова пошта: <b>${esc(o.np.city)}</b></div><div>${esc(o.np.warehouse)}</div>${o.np.recipient ? `<div class="mute">Отримувач: ${esc(o.np.recipient)}${o.np.phone ? ', ' + esc(o.np.phone) : ''}</div>` : ''}` : ''}
+    ${o.address ? `<div style="margin-top:6px">${esc(o.address).replace(/\n/g, '<br>')}</div>` : ''}<p class="mute" style="margin-bottom:0">Звідти ${esc(o.organizer)} роздасть каву.</p></div>` : ''}
   ${!o.isAdmin ? `<p class="mute" style="text-align:center">Це ви збираєте замовлення? <a href="/">Створити своє</a></p>` : ''}`;
   bind();
 }
@@ -310,6 +360,7 @@ function bind() {
     $('#refresh').onclick = async e => { e.target.disabled = true; e.target.textContent = 'Оновлюю…'; try { const r = await api('POST', `/orders/${o.id}/refresh`); delete r.updated; order = r; renderOrder(); } catch (er) { alert(er.message); e.target.disabled = false; } };
     $('#cpsum').onclick = e => copy(summaryText(o, calc(o)), e.target);
     $('#edit').onclick = () => { editing = !editing; $('#editbox').classList.toggle('hide', !editing); };
+    bindNp();
     $('#saveset').onclick = async () => { try { order = await api('PUT', '/orders/' + o.id, readSettings()); editing = false; renderOrder(); } catch (er) { $('#err2').textContent = er.message; } };
   }
 }
