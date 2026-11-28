@@ -63,7 +63,6 @@ details{margin-top:6px}summary{cursor:pointer;color:var(--mute);font-size:14px}
 .acl button:hover{background:var(--soft)}
 .np{margin-top:14px;padding:14px;border-radius:12px;background:var(--soft)}
 .np label:first-child{margin-top:0}
-.bm{display:inline-block;padding:8px 14px;border-radius:10px;background:#f5c518;color:#2a1f17!important;font-weight:700;text-decoration:none;cursor:grab}
 .adminbar .tip{background:rgba(255,255,255,.08);color:inherit}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
 </style>
@@ -277,39 +276,9 @@ function adminBar(o, c, link, isNew) {
       <button class="ghost sm" id="edit">⚙ Картка, адреса…</button>
       <button class="ghost sm" id="cpadmin">🔑 Посилання організатора</button>
       <button class="ghost sm" id="refresh">🔄 Оновити ціни з сайту</button>
-      <button class="ghost sm" id="cartbtn">🛒 Закинути все в кошик MadHeads</button>
     </div>
-    <div id="cartbox" class="hide">${cartBox(o)}</div>
     <div class="mute" style="margin-top:8px;font-size:13px">«Посилання організатора» — щоб відкрити цю панель з іншого пристрою або передати її тому, хто замовлятиме. Друзям його не давайте.</div>
     <div id="editbox" class="${editing ? '' : 'hide'}" style="margin-top:6px">${settingsForm(o)}<button id="saveset" style="margin-top:12px">Зберегти</button><div class="err" id="err2"></div></div>
-  </div>`;
-}
-
-function cartPlan(o) {
-  const by = {}, bad = [];
-  for (const i of o.items) {
-    const slug = (String(i.url).match(/madheadscoffee\.com\/(?:[a-z]{2}\/)?p\/([\w-]+)/) || [])[1];
-    if (slug) by[slug] = (by[slug] || 0) + i.qty; else bad.push(i.name);
-  }
-  const list = Object.entries(by);
-  const code = "(async()=>{if(!/madheadscoffee\\.com$/.test(location.hostname)){alert('Спершу відкрийте сайт madheadscoffee.com, а тоді натисніть ще раз');return}" +
-    "const L=" + JSON.stringify(list) + ";let n=0;for(const[s,c]of L){try{const r=await(await fetch('/api',{method:'POST',body:JSON.stringify({method:'cart.change',params:{slug:s,count:c,options:{}}})})).json();if(r.ok)n++}catch(e){}}" +
-    "alert('У кошику '+n+' з '+L.length+' позицій. Відкриваю оформлення.');location.href='/checkout'})()";
-  return { list, bad, code };
-}
-function cartBox(o) {
-  const c = cartPlan(o);
-  if (!c.list.length) return '<div class="tip" style="margin-top:10px">Поки нічого переносити — ніхто не додав каву з сайту MadHeads.</div>';
-  return `<div class="tip" style="margin-top:10px">
-    <b>Як перенести ${c.list.length} позицій (${packs(c.list.reduce((s, x) => s + x[1], 0))}) у кошик MadHeads:</b>
-    <ol style="margin:8px 0;padding-left:20px">
-      <li>Перетягніть цю жовту кнопку на панель закладок браузера: <a class="bm" href="${esc('javascript:' + encodeURIComponent(c.code))}" onclick="alert('Тут не натискайте — перетягніть кнопку на панель закладок, а натисніть її вже на сайті MadHeads.');return false">☕ Кава → кошик</a></li>
-      <li>Відкрийте <a href="https://madheadscoffee.com" target="_blank" rel="noopener" style="color:inherit">madheadscoffee.com</a> і натисніть цю закладку.</li>
-      <li>Уся кава зʼявиться в кошику, і відкриється оформлення.</li>
-    </ol>
-    <div>Не виходить із закладкою? На сайті MadHeads натисніть F12 → вкладка Console, вставте код і натисніть Enter: <button class="ghost sm" id="cpcode">Скопіювати код</button></div>
-    <div style="margin-top:6px;opacity:.75">Кількість кожної кави в кошику стане такою, як тут. Якщо список зміниться — просто натисніть закладку ще раз (стару закладку замініть новою).</div>
-    ${c.bad.length ? `<div style="margin-top:6px">⚠️ Додайте вручну (немає посилання на MadHeads): ${c.bad.map(esc).join(', ')}</div>` : ''}
   </div>`;
 }
 
@@ -389,8 +358,6 @@ function bind() {
     $('#cplink').onclick = e => { copy(link, e.target); ls.set('mh_new_' + o.id, ''); };
     $('#cpadmin').onclick = e => copy(`${link}#key=${adminKey}`, e.target);
     $('#refresh').onclick = async e => { e.target.disabled = true; e.target.textContent = 'Оновлюю…'; try { const r = await api('POST', `/orders/${o.id}/refresh`); delete r.updated; order = r; renderOrder(); } catch (er) { alert(er.message); e.target.disabled = false; } };
-    $('#cartbtn').onclick = () => $('#cartbox').classList.toggle('hide');
-    $('#cpcode') && ($('#cpcode').onclick = e => copy(cartPlan(o).code, e.target));
     $('#cpsum').onclick = e => copy(summaryText(o, calc(o)), e.target);
     $('#edit').onclick = () => { editing = !editing; $('#editbox').classList.toggle('hide', !editing); };
     bindNp();
